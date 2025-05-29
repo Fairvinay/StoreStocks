@@ -22,7 +22,7 @@ export default function RootLayout({
     }, [])
     return (
         <html lang="en" className=''>
-        <title>StoreStonks</title>
+        <title>Store Notify Stocks</title>
         <link rel="icon" href="/favicon.ico" sizes="any"/>
         <body className={inter.className}>
         <ReduxProvider>
