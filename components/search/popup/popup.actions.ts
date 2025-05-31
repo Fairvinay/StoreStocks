@@ -3,12 +3,14 @@ import {saveRecentSearches} from "@/redux/slices/miscSlice"
 import {saveResults} from "@/redux/slices/stockSlice"
 import {StorageUtils} from "@/libs/cache";
 import {CommonConstants} from "@/utils/constants";
+import {NEXT_PUBLIC_API_KEY } from '../../../config'
 
 export const fetchSearchResults = (_query: string, setTypes: Function, setLoading: Function, _recentSearches: any) => {
     return async (dispatch: Function) => {
         try {
             setLoading(true)
-            const res = await API.get('/', {params: {function: 'SYMBOL_SEARCH', keywords: _query}})
+            const res = await API.get('/', {params: {function: 'SYMBOL_SEARCH', keywords: _query, apikey: NEXT_PUBLIC_API_KEY }})
+
             const uniqueTypes: Array<string> = Array.from(new Set(res.data.bestMatches.map((item: any) => item['3. type'])))
             const uniqueTypesArr = ['All', ...uniqueTypes]
             dispatch(saveResults(res.data.bestMatches))

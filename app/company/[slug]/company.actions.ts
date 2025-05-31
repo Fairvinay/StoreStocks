@@ -30,7 +30,7 @@ export const getCompanyData = (_id: string | string[]) => {
                 res.data.Note?.includes("Thank you for using Alpha Vantage") // fallback
             ) {
                 dispatch({ type: 'SHOW_SUBSCRIPTION_POPUP' }); // dispatch popup
-                dispatch(saveCompanyData(null));
+               // dispatch(saveCompanyData(null));
             } else {
                 dispatch(saveCompanyData(res.data));
                 StorageUtils._save(CommonConstants.companyDataCacheKey, res.data);
@@ -42,7 +42,8 @@ export const getCompanyData = (_id: string | string[]) => {
             const {message} = err
             toast.error(message ? message : "Something went wrong!")
             console.log(err)
-            dispatch(saveCompanyData(null))
+
+           // dispatch(saveCompanyData(null))
         } finally {
             dispatch(disableLoader())
         }

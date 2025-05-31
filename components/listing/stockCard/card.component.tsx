@@ -8,9 +8,11 @@ import {DocumentDownload} from 'iconsax-react'
 const StockCard = ({stock}: { stock: any }) => {
     const dispatch = useDispatch()
     const {ticker, volume, price, change_amount, change_percentage} = stock
+     // `/company/${'IBM'}`
+
     return (
-        <Link href={`/company/${'IBM'}`} onClick={() => {
-            dispatch(saveSelectedCard({...stock, ticker: 'IBM'}))
+        <Link href={`/company/${ ticker}`} onClick={() => {
+            dispatch(saveSelectedCard({...stock, ticker:ticker}))
         }}>
             <div className='rounded-xl mx-auto transition-all cursor-pointer p-4 border-2 border-greylight  my-3'
                  style={{maxWidth: 300}}>
