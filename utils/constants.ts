@@ -1,5 +1,6 @@
 
 const  otherData = JSON.stringify([ {
+    "symbol": "SBET",
             "ticker": "SBET",
             "price": "35.83",
             "change_amount": "29.11",
@@ -7,6 +8,7 @@ const  otherData = JSON.stringify([ {
             "volume": "53992986"
         },
         {
+            "symbol": "LVWR",
             "ticker": "LVWR+",
             "price": "0.0403",
             "change_amount": "0.0302",
@@ -14,6 +16,8 @@ const  otherData = JSON.stringify([ {
             "volume": "1545706"
         },
         {
+
+            "symbol": "MBAVW",
             "ticker": "MBAVW",
             "price": "1.31",
             "change_amount": "0.91",
@@ -23,20 +27,21 @@ const  otherData = JSON.stringify([ {
 const  otherObjData =JSON.parse(otherData);
 const loserData = JSON.stringify(    [
         {
+            "symbol": "RCKT",
             "ticker": "RCKT",
             "price": "2.33",
             "change_amount": "-3.94",
             "change_percentage": "-62.8389%",
             "volume": "54260255"
         },
-        {
+        { "symbol": "RVMDW",
             "ticker": "RVMDW",
             "price": "0.1275",
             "change_amount": "-0.1625",
             "change_percentage": "-56.0345%",
             "volume": "344544"
         },
-        {
+        {  "symbol": "QVCGP",
             "ticker": "QVCGP",
             "price": "7.66",
             "change_amount": "-7.75",
@@ -51,9 +56,12 @@ export const CommonConstants = {
     typeDataKey: '3. type',
     symbolDataKey: '1. symbol',
      recentSearchesKey: 'recentSearches',
+     recentEquitiesKey: 'recentEquities',
    // recentSearchesKey: 'CKFRQC4GPZQUB56W',
    // stockDataCacheKey: 'stockData',
     stockDataCacheKey:   'stockData' ,
+    fyersToken :"fyersToken",
+    platFormKey:   'api-key' ,
     sampleData :  JSON.stringify( { "top_gainers":  otherData ,  "top_losers":loserData } ),
     //stockDataCacheKey: 'CKFRQC4GPZQUB56W',
     companyDataCacheKey: 'companyData',

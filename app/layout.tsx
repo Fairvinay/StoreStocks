@@ -7,6 +7,7 @@ import {useEffect} from 'react';
 import addInterceptor from '@/libs/interceptor';
 import {API} from '@/libs/client';
 import {ThemeProvider} from "@/providers/ThemeProvider";
+import { EquityReduxProvider } from '@/providers/EquityReduxProvider';
 
 const inter = Inter({subsets: ['latin']})
 
@@ -26,12 +27,14 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any"/>
         <body className={inter.className}>
         <ReduxProvider>
+            <EquityReduxProvider>
             <ThemeProvider>
                 <>
                     <Toaster/>
                     {children}
                 </>
             </ThemeProvider>
+            </EquityReduxProvider>
         </ReduxProvider>
         </body>
         </html>

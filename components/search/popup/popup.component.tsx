@@ -11,22 +11,31 @@ import {SearchNormal1} from 'iconsax-react'
 import {fetchSearchResults} from './popup.actions'
 import {useAppDispatch} from '@/providers/ReduxProvider'
 import {StorageUtils} from '@/libs/cache'
+import { useEquity } from '@/providers/EquityReduxProvider'
+import { saveEquities } from '@/redux/slices/equitySlice'
 
 
 const SearchResults = ({query, setQuery}: { query: string, setQuery: Function }) => {
     const results = useSelector((state: GlobalState) => state.stock.searchResults)
+    const resultsFyers = useSelector((state: GlobalState) => state.equity.searchResults)
     const recentSearches = useSelector((state: GlobalState) => state.misc.recentSearches)
     const [types, setTypes] = React.useState<Array<string>>([])
     const [category, setCategory] = React.useState('All')
     const [isLoading, setLoading] = React.useState(false)
     const dispatch = useAppDispatch()
-
+     const { equities } = useEquity();
+    let cnt=0;
 
     useEffect(() => {
+         console.log("popup components fetch results dispatch ..")
         function retrieveSearches() {
             const storedSearches = StorageUtils._retrieve(CommonConstants.recentSearchesKey);
             if (storedSearches.isValid && storedSearches.data !== null) {
                 dispatch(saveRecentSearches(storedSearches.data));
+            }
+             const storedEquities = StorageUtils._retrieve(CommonConstants.recentEquitiesKey);
+            if (storedEquities.isValid && storedEquities.data !== null) {
+                dispatch(saveEquities(storedEquities.data));
             }
         }
 
@@ -38,14 +47,18 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
 
     useEffect(() => {
         const timeoutId = setTimeout(() => {
-            dispatch(fetchSearchResults(query, setTypes, setLoading, recentSearches))
+            console.log("popup components fetch results ..")
+            console.log(" recentSearches .."+JSON.stringify(recentSearches))
+
+            dispatch(fetchSearchResults(query, equities, setTypes, setLoading, recentSearches))
         }, 1000)
 
         return () => {
             clearTimeout(timeoutId)
             dispatch(saveResults(null))
+            dispatch(saveRecentSearches(null))
         }
-    }, [query, dispatch])
+    }, [query,equities, dispatch])
 
 
     return (
@@ -64,6 +77,34 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
             {(!results) ? <div className='my-2'>
                 <p className='text-md font-semibold text-black dark:text-white'>Recent Searches</p>
                 <div>
+                    {   
+                        recentSearches &&  Array.isArray(recentSearches) ? recentSearches.map((item: any) => {
+                            console.log("item "+JSON.stringify(item))
+                            if(Array.isArray(item) ){
+                                 console.log("item is array " )
+                                 return item
+                                    .filter(seElm => seElm !== null && seElm !== undefined)
+                                    .map((seElm) => (
+                                       <p
+                                        key={seElm['1. symbol']}
+                                        className="w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start"
+                                        >
+                                        <SearchNormal1 size={15} className="mr-2" />
+                                        <span className="font-semibold">{seElm['2. name']}</span>
+                                        </p>
+                                    ));
+
+
+                             
+                            }
+                            
+                        }) : null
+                    }
+                </div>
+            </div> : null}
+                     {(!resultsFyers && !recentSearches) ? <div className='my-2'>
+                <p className='text-md font-semibold text-black dark:text-white'>Recent Searches</p>
+                <div>
                     {
                         recentSearches &&  Array.isArray(recentSearches) ? recentSearches.map((item: any) => {
                             if (!item.toLowerCase().includes(query.toLowerCase())) return null
@@ -78,6 +119,8 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
                     }
                 </div>
             </div> : null}
+
+
             {isLoading ? <ActionLoader/> : <div className=''>
                 {
                     results ? results.map((item: any) => {
@@ -92,3 +135,30 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
 }
 
 export default SearchResults
+/*
+
+ item.map( seElm => {
+                                  console.log("elem is item  "+JSON.stringify(seElm))
+                                if(seElm !==null && seElm !==undefined)
+                                { 
+                                      console.log("elem is item not null not undefined  ");
+                              return  <> <p
+                                     key={seElm}
+                                     className='w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start '>
+                                <SearchNormal1 size={15} className='mr-2'/>
+                                <span className='font-semibold'>{seElm}</span>{seElm.slice(query.length)}
+                                 </p> </> ;
+                                }        
+                              })
+
+
+ORIGINAL CODE 
+ if (!item.toLowerCase().includes(query.toLowerCase())) return null
+                            return <p
+                                key={item}
+                                onClick={() => setQuery(item)}
+                                className='w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start '>
+                                <SearchNormal1 size={15} className='mr-2'/>
+                                <span className='font-semibold'>{query}</span>{item.slice(query.length)}
+                            </p>
+*/

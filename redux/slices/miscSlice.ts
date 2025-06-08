@@ -6,13 +6,15 @@ export interface MiscSliceProps {
     tab: string,
     recentSearches: any,
      showSubscribePopup:boolean
+    platformType: string
 }
 const initialState:MiscSliceProps = {
     loader: false,
     isDarkMode: false,
     tab: "Top Gainers",
     recentSearches: [],
-    showSubscribePopup: false
+    showSubscribePopup: false,
+    platformType: "alpha-vantage"
 }
 
 
@@ -26,6 +28,18 @@ const miscSlice = createSlice({
         changeTab: (state, action) => {
             state.tab=action.payload
         },
+        changePlatformType: (state, action) => {
+           if(action.payload !==undefined && action.payload !== null && action.payload !== '') {
+            if(action.payload  === 'fyers'){
+                state.platformType='fyers'
+            }
+            else{
+                state.platformType='alpha-vantage'
+            }
+           }
+           //  state.platformType=action.payload
+
+        },
         enableLoader: (state ) => {
             state.loader=true
         },
@@ -35,7 +49,7 @@ const miscSlice = createSlice({
         saveRecentSearches: (state, action) => {
             state.recentSearches=action.payload
         },
-         
+          
     SHOW_SUBSCRIPTION_POPUP: (state) => {
       state.showSubscribePopup = true;
     },

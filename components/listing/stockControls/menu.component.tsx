@@ -3,8 +3,14 @@ import React, {useState} from 'react'
 import Chip from '../../common/textChip/chip.component'
 import {useDispatch, useSelector} from 'react-redux';
 import {changeTab} from '@/redux/slices/miscSlice';
+import {disableLoader, enableLoader} from "@/redux/slices/miscSlice"
+import {API, FYERSAPI, FYERSAPILOGINURL} from "@/libs/client"
 import {GlobalState} from '@/redux/store';
 import {saveActivelyTraded, saveGainers, saveLosers} from '@/redux/slices/stockSlice';
+import { platform } from 'os';
+import { StorageUtils } from '@/libs/cache';
+import { CommonConstants } from '@/utils/constants';
+import { AnyNode } from 'postcss';
 
 const arr = [
     {key: 1, title: "Top Gainers"},
@@ -15,15 +21,66 @@ const sortMapper = [
     {key: 2, title: "Sort by price"},
 ]
 
+const platformMapper = [
+    {key: 1, title: "Alpha-Vantage"},
+    {key: 2, title: "Fyers"},
+]
 const Menu = () => {
     const [sortType, setSortType] = useState('1')
+    let globalUserCheck  :any = undefined;
+    const [platformType, setPlatformType] = useState('1')
     const tab = useSelector((state: GlobalState) => state.misc.tab)
     const gainers = useSelector((state: GlobalState) => state.stock.gainers)
     const losers = useSelector((state: GlobalState) => state.stock.losers)
     const activelyTraded = useSelector((state: GlobalState) => state.stock.activelyTraded)
+    const currentPlatform = useSelector((state: GlobalState) => state.misc.platformType)
+    //const currentPlatform = useSelector((state: GlobalState) => state.misc.platformType)
     const dispatch = useDispatch();
 
-
+    const popupCenter = (url:any, title:any) => {
+        const dualScreenLeft = window.screenLeft ?? window.screenX;
+        const dualScreenTop = window.screenTop ?? window.screenY;
+    
+        const width =
+          window.innerWidth ?? document.documentElement.clientWidth ?? screen.width;
+    
+        const height =
+          window.innerHeight ??
+          document.documentElement.clientHeight ??
+          screen.height;
+    
+        const systemZoom = width / window.screen.availWidth;
+    
+        const left = (width - 500) / 2 / systemZoom + dualScreenLeft;
+        const top = (height - 550) / 2 / systemZoom + dualScreenTop;
+    
+        const newWindow = window.open(
+          url,
+          title,
+          `width=${500 / systemZoom},height=${550 / systemZoom
+          },top=${top},left=${left}`
+        );
+        newWindow?.window.addEventListener('load', () => {
+            newWindow?.window.addEventListener('unload', () => {
+                console.log("unload the popup ")
+               // ftech the globallogin boject 
+               let globaProm =    ( async () => { 
+                 let login = await FYERSAPI.get('/fyersgloballogin'); 
+                 console.log("fyers login called ");
+                 return login;
+                }) 
+                const res = Promise.all([ globaProm()]);
+                res.then((values) => {
+                    StorageUtils._save(CommonConstants.fyersToken,values)
+                     console.log("fyers login token saved ")
+                })
+               
+                // window.location.reload();
+            });
+        });
+        
+        newWindow?.focus();
+      };
     const sortByPercentage = () => {
         if (tab === "Top Gainers") {
             const sortedData = [...gainers].sort((a: any, b: any) => {
@@ -60,6 +117,71 @@ const Menu = () => {
             dispatch(saveActivelyTraded(sortedData))
         }
     }
+    const logByPlatform = () => {
+        // check platform type is alpha-vantage or fyers
+        // currentPlatform
+        if (currentPlatform !==  "fyers") {
+            const apiKey = StorageUtils._retrieve(CommonConstants.platFormKey)
+            if (apiKey.isValid && apiKey.data !== null) {
+                
+            }
+            else {
+                console.log("Fyers not logged in ");    
+                try {
+                    dispatch(enableLoader());
+
+                   let fyerLoginProm =  ( async () => {
+                        //{params: {function: 'TOP_GAINERS_LOSERS' , apikey:CommonConstants.apiKey}}
+
+                      //let res =  await FYERSAPI.get('/fyerscallback' )
+                      let res =   popupCenter(FYERSAPILOGINURL, "Fyers Signin")
+                        return res;
+                    }) ;
+                    const result = Promise.all([    fyerLoginProm()]);
+                     // run a interval to check the fyersToken 
+                    globalUserCheck  =  setInterval( async() => {
+                        let result =   await FYERSAPI.get('/fyersgloballogin' )
+                        console.log("fyers login called ");
+                        let data =    result.data.value;
+                        StorageUtils._save(CommonConstants.fyersToken,data)
+                        const res = StorageUtils._retrieve(CommonConstants.fyersToken);
+                        if (res.isValid && res.data !== null) {
+                           
+                            let auth_code = res.data['auth_code'];
+                            if (auth_code&& auth_code !== null && auth_code !== undefined) {
+                                console.log("User is Authorized ");
+                               clearInterval(globalUserCheck);
+                            }
+                            else{
+                                console.log("User is awaiting authorization ");
+                            }
+                        }
+                     },5000);
+
+                   // const res = StorageUtils._retrieve(CommonConstants.fyersToken );
+                    
+                } catch (error) {
+                    // @ts-ignore
+                    const {message} = error
+                    //toast.error(message ? message : "Something went wrong!")
+                    console.log(error)
+                    return error
+                } finally {
+                    dispatch(disableLoader())
+                }
+
+                //dispatch(loginFyers([]));
+               
+            }
+           // const sortedData = [...gainers].sort((a: any, b: any) => {
+           //     return parseFloat(b.change_amount) - parseFloat(a.change_amount)
+           // })
+           // dispatch(saveGainers(sortedData))
+        } 
+
+    }
+
+
     return (
         <div className='flex flex-wrap gap-2 bg-white dark:bg-black items-center justify-between w-11/12 mx-auto my-3'>
             <select value={tab} onChange={(e) => {
@@ -110,6 +232,28 @@ const Menu = () => {
                 <option value={1}>Sort by Percentage</option>
                 <option value={2}>Sort by Price</option>
             </select>
+        
+
+            <div className="hidden md:flex relative items-center">
+                 {/* 
+                  <select className="p-2 rounded-lg bg-greylight dark:bg-greydark text-gretdark dark:text-white focus-visible:outline-none">
+                  md:hidden
+                 Alpha-Advantange or Fyers selection */}
+                <select value={platformType} onChange={(e) => {
+                                    if (e.target.value == '1') {
+                                        console.log(" selected " + e.target.value)
+                                    } else {
+                                        logByPlatform()
+                                        console.log(" selected " + e.target.value)
+                                    }
+                                    setPlatformType(e.target.value)
+                  }}  
+                    className='p-2 focus-visible:outline-none block  rounded-lg bg-greylight dark:bg-greydark text-gretdark  dark:active:text-green-700  '> {/* dark:text-white */}
+                <option value={1}>Alph-Vantage</option>
+                <option value={2}>Fyers</option>
+               </select>
+             </div>
+
 
         </div>
     )
