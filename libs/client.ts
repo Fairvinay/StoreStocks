@@ -5,6 +5,12 @@ const API = axios.create({
 })
 const FYERSAPI = axios.create({
     baseURL: 'https://store-stocks.netlify.app/.netlify/functions/netlifystockfyersbridge/api'
+   // baseURL: 'http://192.168.1.6:8888/.netlify/functions/netlifystockfyersbridge/api'
 })
 const FYERSAPILOGINURL = 'https://store-stocks.netlify.app/.netlify/functions/netlifystockfyersbridge/api/fyerscallback'
-export { API , FYERSAPI ,FYERSAPILOGINURL };
+//const FYERSAPILOGINURL = 'http://192.168.1.6:8888/.netlify/functions/netlifystockfyersbridge/api/fyerscallback'
+
+const FYERSAPINSECSV = 'https://store-stocks.netlify.app';
+//const FYERSAPINSECSV = 'http://192.168.1.6:8888';
+
+export { API , FYERSAPI ,FYERSAPILOGINURL , FYERSAPINSECSV };
