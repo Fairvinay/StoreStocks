@@ -44,7 +44,22 @@ export const EquityReduxProvider = ({children}: { children: React.ReactNode }) =
           const sym = { "1. symbol": `${cleaned}`  };
           let rw = {  "2. name": rawName  };
           
-          const type =  { "3. type": "ETF" };
+          let type =  { "3. type": "ETF" };
+          if(symbol.includes('NCD') || rawName.includes('NCD')){
+            type =  { "3. type": "NCD" };
+          }
+          else if(symbol.includes('EQ')){
+             type =  { "3. type": "Equity" };
+          }
+          else if(symbol.includes('BOND')){
+             type =  { "3. type": "BOND" };
+          }
+           else if(symbol.includes('NAV')){
+             type =  { "3. type": "BOND" };
+          }
+           else if(symbol.includes('INDEX')){
+             type =  { "3. type": "INDEX" };
+          }
           const region =  { "4. region": "India/Bombay" };
           const marketOpen =  { "5. marketOpen": "09:15" };
           const marketClose =  { "6. marketClose": "15:30" };

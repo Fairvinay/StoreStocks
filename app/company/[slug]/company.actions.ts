@@ -6,7 +6,7 @@ import {CommonConstants} from "@/utils/constants"
 import toast from "react-hot-toast"
 
 export const getCompanyData = (_id: string | string[]) => {
-
+      // SAMPLE TOP GANERS DEFAULT DATA 
       StorageUtils._save (CommonConstants.stockDataCacheKey,CommonConstants.sampleDataVersion1);
     return async (dispatch: Function) => {
         const dataFromCache = StorageUtils._retrieve(CommonConstants.companyDataCacheKey)

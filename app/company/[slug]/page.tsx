@@ -4,6 +4,7 @@ import {NextPageContext} from "next";
  import { headers } from "next/headers"
 import { redirect } from 'next/navigation';
 import { NextRequest } from 'next/server';
+import { API, FYERSAPINSECSV } from '@/libs/client';
 
 const CompanyView = lazy(() => import ("@/components/company/companyInfo/CompanyView"));
 /* this is server component not possible 
@@ -22,7 +23,7 @@ function useBaseUrl() {
 
 const CompanyPage = ({params}: any) => {
     console.log(params)
-     const baseUrl = 'http://localhost:3000/'
+     const baseUrl = FYERSAPINSECSV;  // 'http://localhost:3000/'
      const headersList = headers()
      const referer = headersList.get("referer")
      let url = referer?.substring(0,referer?.indexOf('company')-1)

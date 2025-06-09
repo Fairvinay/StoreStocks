@@ -87,10 +87,10 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
                                     .map((seElm) => (
                                        <p
                                         key={seElm['1. symbol']}
-                                        className="w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start"
+                                       className="w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start"
                                         >
                                         <SearchNormal1 size={15} className="mr-2" />
-                                        <span className="font-semibold">{seElm['2. name']}</span>
+                                        <span className="font-semibold">{query}</span>{seElm['2. name'].slice(query.length)}
                                         </p>
                                     ));
 
@@ -102,24 +102,7 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
                     }
                 </div>
             </div> : null}
-                     {(!resultsFyers && !recentSearches) ? <div className='my-2'>
-                <p className='text-md font-semibold text-black dark:text-white'>Recent Searches</p>
-                <div>
-                    {
-                        recentSearches &&  Array.isArray(recentSearches) ? recentSearches.map((item: any) => {
-                            if (!item.toLowerCase().includes(query.toLowerCase())) return null
-                            return <p
-                                key={item}
-                                onClick={() => setQuery(item)}
-                                className='w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start '>
-                                <SearchNormal1 size={15} className='mr-2'/>
-                                <span className='font-semibold'>{query}</span>{item.slice(query.length)}
-                            </p>
-                        }) : null
-                    }
-                </div>
-            </div> : null}
-
+           
 
             {isLoading ? <ActionLoader/> : <div className=''>
                 {
