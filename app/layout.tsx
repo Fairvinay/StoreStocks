@@ -26,7 +26,7 @@ export default function RootLayout({
         <html lang="en" className=''>
         <title>Store Notify Stocks</title>
         <head>{/* Google Tag Manager */}
-        <Script id="gtm-script" strategy="afterInteractive">
+        <script id="gtm-script" strategy="afterInteractive">
           {`
             (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -34,7 +34,7 @@ export default function RootLayout({
             'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
             })(window,document,'script','dataLayer','GTM-PDF5CBRC');
           `}
-        </Script>
+        </script>
 	   </head>
         <link rel="icon" href="/favicon.ico" sizes="any"/>
         <body className={inter.className}>
