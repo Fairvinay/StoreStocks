@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@analytics/google-tag-manager": "^0.6.0",
     "@ant-design/charts": "^1.4.2",
  "@netlify/plugin-nextjs": "^5.11.2",
     "@reduxjs/toolkit": "^1.9.7",
+    "@vercel/analytics": "^1.5.0",
+    "analytics": "^0.8.16",
     "axios": "^1.5.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",

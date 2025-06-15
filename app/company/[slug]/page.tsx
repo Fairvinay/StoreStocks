@@ -46,7 +46,7 @@ const CompanyPage = ({params}: any) => {
 }
 
 CompanyPage.getInitialProps = async (ctx: NextPageContext) => {
-    console.log(ctx.query, "ss")
+    console.log("" + JSON.stringify(ctx.query), "ss")
     return {_id: ctx.query.id};
 }
 

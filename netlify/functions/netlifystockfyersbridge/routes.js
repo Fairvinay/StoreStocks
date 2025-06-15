@@ -12,7 +12,9 @@ var fyersAPI = new FyersAPI()
 var fyersModel= fyersV3.fyersModel
  // var fyersAPI =  new fyersModel({"path":"./","enableLogging":true}); // new require("fyers-api-v3").fyersModel();
 	// var fyersAPI = new FyersAPI()
-var client_id= "7GSQW68AZ4-100"
+//var client_id= "7GSQW68AZ4-100"
+var client_id= "7GSQW68AZ4-100" ; // "TRLV2A6GPL-100" ; // PROD 
+var secret_key = "MGY8LRIY0M" ; 		 // "V72MPISUJC" ; // PROD 
 //var redirectUrl  = "https://192.168.1.8:56322/fyersauthcodeverify"
 //var redirectUrl  = "http://192.168.1.6:8888/.netlify/functions/netlifystockfyersbridge/api/fyersauthcodeverify"
 var redirectUrl  = "https://store-stocks.netlify.app/.netlify/functions/netlifystockfyersbridge/api/fyersauthcodeverify"
@@ -326,14 +328,14 @@ router.get('/fyersquicklogin', async function (req,res) {
 			 console.log(`symbol : ${symbol}  code : ${apikey}  auth_code:  ${authcode} `);
 		}
 		//res.send(output)
-		var appId       = '7GSQW68AZ4-100';  // app_id recieved after creating app
+		var appId       = client_id ;  //'7GSQW68AZ4-100' PROD APP ID  app_id recieved after creating app
 	if( symbol !==null && symbol !== undefined && symbol !== ''){
 			console.log("Symbol : "+symbol); 
 	 if( authcode !==null && authcode !== undefined && authcode !== ''){
 			console.log("Authcode : "+authcode);
 		var accessToken = authcode;  // access_token recieved after login
-		var api = new fyersExtra.Api(appId, accessToken);
-	  fyers.generate_access_token({"client_id":client_id,"secret_key":"MGY8LRIY0M",
+		var api = new fyersExtra.Api(appId, accessToken);   // "MGY8LRIY0M", PROD 
+	  fyers.generate_access_token({"client_id":client_id,"secret_key": secret_key,
 			"auth_code":authcode})
 		.then(async (response)=>{
 		if(response.s=='ok'){
@@ -545,7 +547,7 @@ router.get('/fyersgetquote', async function (req,res) {
 	  if( authcode !==null && authcode !== undefined && authcode !== ''){
 		console.log("FYERS Initiatied Successfully ") 
 		let fyersAccess= false;
-		fyers.generate_access_token({"client_id":client_id,"secret_key":"MGY8LRIY0M","auth_code":authcode}).then((response)=>{
+		fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
 			if(response.s=='ok'){
 				fyers.setAccessToken(response.access_token)
 				console.log("FYERS Grants provided  ") 
@@ -754,7 +756,7 @@ async function handledFyersRedirectAuthCode(authcode, req , res ){
 	if( authcode !==null && authcode !== undefined && authcode !== ''){
 		console.log("FYERS Initiatied Successfully ") 
 		let fyersAccess= false;
-		fyers.generate_access_token({"client_id":client_id,"secret_key":"MGY8LRIY0M","auth_code":authcode}).then((response)=>{
+		fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
 			if(response.s=='ok'){
 				fyers.setAccessToken(response.access_token)
 				console.log("FYERS Grants provided  ") 

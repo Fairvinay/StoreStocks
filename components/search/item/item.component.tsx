@@ -9,7 +9,43 @@ import { FYERSAPI } from '@/libs/client';
 import { StorageUtils } from '@/libs/cache';
 import { CommonConstants } from '@/utils/constants';
 import { useRouter } from 'next/navigation';
+import {saveCompanyData} from "@/redux/slices/stockSlice"
 
+/*
+{"message":"","code":200,"d":[{"n":"NSE:ICICIBANK-EQ","v":{"ask":0,"bid":1416.1,"chp":-0.64,"ch":-9.1,
+"description":"NSE:ICICIBANK-EQ","exchange":"NSE","fyToken":"10100000004963",
+"high_price":1421.5,"low_price":1403.6,"lp":1416.1,"open_price":1403.6,"original_name":"NSE:ICICIBANK-EQ",
+"prev_close_price":1425.2,"short_name":"ICICIBANK-EQ","spread":0,"symbol":"NSE:ICICIBANK-EQ",
+"tt":"1749945600","volume":7573103,"atp":1413.66},"s":"ok"}],
+"s":"ok"}
+*/
+const getAlpaVantageStyleStock = (fyersQuote:any ) => {
+      if(fyersQuote["d"] !== undefined && Array.isArray(fyersQuote["d"] )){
+          let quoteArray = fyersQuote["d"] ; 
+          let quoteEntry = quoteArray[0]["n"]; 
+          let quoteVal = quoteArray[0]["v"];
+          let ticker   = quoteVal["original_name"];
+          let  volume  = quoteVal["volume"];
+          let  price  = quoteVal["lp"] + ""; 
+          let  change_amount   = quoteVal["ch"]+ "";
+          let  change_percentage  = quoteVal["chp"]+"";
+          let  exchange = quoteVal["exchange"];
+         console.log("Fyers Qoute received for  "+quoteEntry );
+          let fyersStock = {symbol : ticker  ,  ticker: ticker , volume: volume , price :price ,
+               change_amount:change_amount , change_percentage:change_percentage ,exchange: exchange};
+            return fyersStock ;
+
+      }
+      else { 
+         console.log("Fyers Qoute parse failed  sending default  "  );
+         let fyersStock = {symbol : "NSE:ICICIBANK-EQ"  ,  ticker: "NSE:ICICIBANK-EQ" , volume: "7573103" ,
+           price :"1403.6" ,
+               change_amount:"-9.1" , change_percentage:"-0.64" ,  exchange: "NSE" };
+          return fyersStock ;
+ 
+      }
+
+}
 const SearchCard = ({item}: { item: any }) => {
     const dispatch = useAppDispatch();
     const gainers = useSelector((state: GlobalState) => state.stock.gainers)
@@ -34,8 +70,12 @@ const SearchCard = ({item}: { item: any }) => {
                           auth_code = tokenauth.data['auth_code'];
                     }
                   //let res =  await FYERSAPI.get('/fyerscallback' )
+                   let symbol  = item['1. symbol'] ;
+                   console.log("item['1. symbol']  "+symbol);
                   let sy = item['1. symbol'].substring(0, item['1. symbol'].indexOf(   "."));
-                  console.log("symbol "+sy);
+                  
+                   sy   = (sy=='' || sy === undefined) ? symbol: sy;
+                   console.log("symbol "+sy);
                    // '/fyersgetquote' 
                   let res =     await FYERSAPI.get('/fyersquicklogin', {params: {auth_code :auth_code , symbol:sy , apikey:CommonConstants.apiKey}})
                   //  popupCenter(FYERSAPILOGINURL, "Fyers Signin")
@@ -57,6 +97,12 @@ const SearchCard = ({item}: { item: any }) => {
                        if (!data.length) {
                           let stock =  data['2. symbol'];
                           let ticker = stock;
+                           StorageUtils._save (CommonConstants.companyDataCacheKey,data);
+                          // this will allow the 
+                          //  const dataFromCache = StorageUtils._retrieve(CommonConstants.companyDataCacheKey)
+                          // to retrive properly when router hits `/company/${ticker}`
+                           dispatch(saveCompanyData(data))
+
                            dispatch(saveSelectedCard({ ...stock, ticker:ticker }));
                              router.push(`/company/${ticker}`);
                          //  dispatch(saveSelectedCard(data))
@@ -67,14 +113,43 @@ const SearchCard = ({item}: { item: any }) => {
                   }
                   else {
                      console.log( "data not undefined "+JSON.stringify(data.length))
-                      if (!data.length) {
-                          let stock =    data["Meta Data"]["2. Symbol"]; //data['2. symbol'];
-                          let ticker = stock;
-                           console.log( "stock "+JSON.stringify(stock))
-                           console.log( "ticker "+JSON.stringify(ticker))
-                            console.log( "{ ...stock, ticker:ticker } "+JSON.stringify({ ...stock, ticker:ticker }))
-                           dispatch(saveSelectedCard({ ...stock, ticker:ticker }));
-                             router.push(`/company/${ticker}`);
+                      if (data.length === undefined) {
+                          //let stock =    data["Meta Data"]["2. Symbol"]; //data['2. symbol'];
+                          let stock =    data["Meta Data"]; // ["2. Symbol"]; //data['2. symbol'];
+                          if(stock !== undefined){
+                            let ticker = stock["2. Symbol"];
+                            if(ticker !== undefined){
+                             console.log( "stock "+JSON.stringify(stock))
+                             console.log( "ticker "+JSON.stringify(ticker))
+                             console.log( "{ ...stock, ticker:ticker } "+JSON.stringify({ ...stock, ticker:ticker }))
+                             StorageUtils._save (CommonConstants.companyDataCacheKey,data);
+                            // this will allow the 
+                            //  const dataFromCache = StorageUtils._retrieve(CommonConstants.companyDataCacheKey)
+                            // to retrive properly when router hits `/company/${ticker}`
+                            //  dispatch(saveCompanyData(data))
+                              // dispatch(saveSelectedCard({ ...stock, ticker:ticker }));
+                             let quoteResponse =     await FYERSAPI.get('/fyersgetquote', {params: {auth_code :auth_code , symbol:sy , apikey:CommonConstants.apiKey}})
+                            
+                             let quoteData = await quoteResponse .data; 
+                             let  alphaStock =   getAlpaVantageStyleStock(quoteData); 
+
+                             dispatch(saveSelectedCard({ ...alphaStock, ticker:ticker }));
+                              router.push(`/company/${ticker}`);
+                            }
+                            else {
+                               console.log( "Meta Data / 2. Symbol not visible ticker not set ")
+                            }
+                            
+                          }
+                          else {
+                             console.log( "/fyersquicklogin symbol  "+sy+" failed ")
+                          }
+                       //   let ticker = stock;
+                         //  console.log( "stock "+JSON.stringify(stock))
+                         //  console.log( "ticker "+JSON.stringify(ticker))
+                         //   console.log( "{ ...stock, ticker:ticker } "+JSON.stringify({ ...stock, ticker:ticker }))
+                         //  dispatch(saveSelectedCard({ ...stock, ticker:ticker }));
+                         //    router.push(`/company/${ticker}`);
                          //  dispatch(saveSelectedCard(data))
                        }
                   }

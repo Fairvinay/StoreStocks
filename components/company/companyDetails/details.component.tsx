@@ -1,5 +1,7 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Logo from '../../common/stockLogo/logo.component'
+import { StorageUtils } from '@/libs/cache';
+import { CommonConstants } from '@/utils/constants';
 
 export interface CompanyHeaderProps {
     Symbol: string,
@@ -13,7 +15,18 @@ export interface CompanyHeaderProps {
 }
 
 const CompanyHeader = (props: CompanyHeaderProps) => {
-    const {change_amount, price, change_percentage, Symbol, Name, Exchange, AssetType} = props
+    const {change_amount, price, change_percentage, Symbol, Name, Exchange, AssetType} = props;
+    let dolarRup = "$";
+    useEffect( () => {
+        // check if Fyer Login and company Data available 
+        let tokenauth = StorageUtils._retrieve(CommonConstants.fyersToken);
+        let auth_code ='';
+        if (tokenauth.isValid && tokenauth.data !== null) {
+            dolarRup = "₹";
+            console.log("Fyers user logged ");
+        }
+
+    },[])
     return (
         <div
             className='bg-white  dark:bg-black p-5 md:p-3 flex flex-col md:flex-row justify-between items-center w-full md:w-10/12 mx-auto'>
@@ -31,7 +44,7 @@ const CompanyHeader = (props: CompanyHeaderProps) => {
             </div>
             <div
                 className='flex flex-wrap mt-3 w-full mx-auto md:mx-0 md:w-auto md:mt-0 md:block items-center justify-between'>
-                <h1 className=' text-black dark:text-white text-xl font-semibold text-right'>${price}</h1>
+                <h1 className=' text-black dark:text-white text-xl font-semibold text-right'>{ dolarRup} {price}</h1>
                 {
                     change_amount.includes('-')
                         ? <span className='text-sm  text-red'>{change_amount} ({change_percentage}) ▼</span>

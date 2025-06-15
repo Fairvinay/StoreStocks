@@ -2,6 +2,7 @@ import { API } from "@/libs/client"
 import { CommonConstants } from "@/utils/constants"
 import toast from "react-hot-toast/headless"
 import { convertDateToReadable } from "./chart.functions"
+import { StorageUtils } from "@/libs/cache"
 const mapper = {
     "TIME_SERIES_DAILY": "Time Series (Daily)",
     "TIME_SERIES_WEEKLY": "Weekly Time Series",
@@ -22,10 +23,28 @@ export const fetchChartData = (
         try {
             setLoading(true)
             let res;
-            if (fetchFn === "TIME_SERIES_INTRADAY") {
+            // check Fyers Tokem 
+            // check Company Data Local Storeage presetn 
+            let cmpSymMatch= false; let    parsedData:any = undefined;
+              const dataFromCache = StorageUtils._retrieve(CommonConstants.companyDataCacheKey)
+             if (dataFromCache.isValid && dataFromCache.data !== null) {
+                 console.log("company Data Available  : "  );
+                 //    "2. Symbol"
+                   parsedData = dataFromCache.data
+                if (parsedData.Symbol.indexOf(Symbol) > -1 ) {
+                     console.log("company Data Available for  : "+JSON.stringify(Symbol)  );
+                     cmpSymMatch = true;
+                }
+             }
+            if (fetchFn === "TIME_SERIES_INTRADAY" && !cmpSymMatch) {
+                console.log("chart action fetchFn : "+JSON.stringify(fetchFn) )
+                console.log("chart action Symbol : "+JSON.stringify(Symbol) )
                 res = await API.get('/', { params: { function: fetchFn, symbol: Symbol, interval:'5min' } })
             } else {
-                res = await API.get('/', { params: { function: fetchFn, symbol: Symbol } })
+                 console.log("chart action fetchFn : "+JSON.stringify(fetchFn) )
+                  console.log("chart action Symbol : "+JSON.stringify(Symbol) )
+                 // res = await API.get('/', { params: { function: fetchFn, symbol: Symbol } })
+                 res =  {  data :  parsedData };
             }
                 // @ts-ignore
                 const chartDates = res.data[mapper[fetchFn]]

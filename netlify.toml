@@ -14,6 +14,16 @@
     X-Robots-Tag = "index"
     Cache-Control = "public, max-age=0, no-cache, no-store, must-revalidate"
 
+[dev]
+  bind = "0.0.0.0"  # Bind to all available network interfaces
+  framework = "#custom"
+  command = "npm run dev"   # Or your actual dev command
+  port = 8888               # Optional
+  targetPort = 3000         # Optional if using a proxy
+  https = { keyFile = "./ssl.key/server.key", certFile = "./ssl.crt/server.crt" }
+#  https = true
+#  cert = "./ssl.crt/server.crt"
+#  key = "./ssl.key/server.key"
 
 [[headers]]
 for = "/api/*"

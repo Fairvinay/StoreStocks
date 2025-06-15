@@ -8,6 +8,7 @@ import addInterceptor from '@/libs/interceptor';
 import {API} from '@/libs/client';
 import {ThemeProvider} from "@/providers/ThemeProvider";
 import { EquityReduxProvider } from '@/providers/EquityReduxProvider';
+import Analytics from './analytics/Analytics';
 
 const inter = Inter({subsets: ['latin']})
 
@@ -29,7 +30,7 @@ export default function RootLayout({
         <ReduxProvider>
             <EquityReduxProvider>
             <ThemeProvider>
-                <>
+                <>  <Analytics />
                     <Toaster/>
                     {children}
                 </>

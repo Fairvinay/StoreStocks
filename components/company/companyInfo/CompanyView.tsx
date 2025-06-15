@@ -19,6 +19,7 @@ const CompanyView = (props: any) => {
     const companyData = useSelector((state: GlobalState) => state.stock.companyData)
     const dispatch = useAppDispatch();
     useEffect(() => {
+        console.log("CompanyView: props._id  "+JSON.stringify(props._id))
         dispatch(getCompanyData(props._id))
     }, [dispatch, props._id]);
 
@@ -29,6 +30,9 @@ const CompanyView = (props: any) => {
 
     if (!selectedCard) {
         return <p>{`Can't`} load, please go back.</p>
+    }
+    else { 
+         console.log("selectedCard:    "+JSON.stringify(selectedCard))
     }
 
     return (
@@ -41,14 +45,15 @@ const CompanyView = (props: any) => {
                     price={selectedCard.price || "Demo"}
                     change_amount={selectedCard.change_amount || "abc"}
                     change_percentage={selectedCard.change_percentage || "ac"}
+                    Exchange={selectedCard.exchange || "NSE"}
                     {...companyData}
                 />
                 <Suspense fallback={<ActionLoader/>}>
-                    <CompanyChart Symbol={props._id}/>
+                   {/*  <CompanyChart Symbol={props._id}/>*/}
                 </Suspense>
                 <div className="flex flex-wrap gap-2 items-center w-10/12 mx-auto my-3">
-                    <Chip isSelected={false} text={`SECTOR: ${companyData.Sector}`}/>
-                    <Chip isSelected={false} text={`INDUSTRY: ${companyData.Industry}`}/>
+                    <Chip isSelected={false} text={`SECTOR: ${companyData?.Sector  || "General"}`}/>
+                    <Chip isSelected={false} text={`INDUSTRY: ${companyData?.Industry || "Listed"}`}/>
                 </div>
 
                 <CompanyAbout {...companyData} />

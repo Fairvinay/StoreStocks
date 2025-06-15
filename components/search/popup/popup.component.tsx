@@ -87,6 +87,7 @@ const SearchResults = ({query, setQuery}: { query: string, setQuery: Function })
                                     .map((seElm) => (
                                        <p
                                         key={seElm['1. symbol']}
+                                         onClick={() => setQuery(seElm)}
                                        className="w-full p-2 hover:bg-brandblue cursor-pointer rounded-xl dark:text-white hover:text-white text-sm flex items-center justify-start"
                                         >
                                         <SearchNormal1 size={15} className="mr-2" />
