@@ -5,6 +5,7 @@ import {ReduxProvider} from '@/providers/ReduxProvider'
 import {Toaster} from 'react-hot-toast';
 import {useEffect} from 'react';
 import addInterceptor from '@/libs/interceptor';
+import { GTM_ID, pageview } from "@/libs/gtm"
 import {API} from '@/libs/client';
 import {ThemeProvider} from "@/providers/ThemeProvider";
 import { EquityReduxProvider } from '@/providers/EquityReduxProvider';
