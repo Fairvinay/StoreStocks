@@ -1,14 +1,15 @@
+import { getHoldingData } from "@/components/company/holdings/holdings.actions"
 import {StorageUtils} from "@/libs/cache"
 import {API} from "@/libs/client"
 import {disableLoader, enableLoader} from "@/redux/slices/miscSlice"
-import {saveActivelyTraded, saveGainers, saveLosers} from "@/redux/slices/stockSlice"
+import {saveActivelyTraded, saveGainers, saveLosers , saveHoldingData } from "@/redux/slices/stockSlice"
 import {CommonConstants} from "@/utils/constants"
 import toast from "react-hot-toast"
 
 export const fetchStockList = () => {
    //  _save: (key: string, value: any) => {
     StorageUtils._save (CommonConstants.stockDataCacheKey,CommonConstants.sampleData);
-
+       let globalUserCheck  :any = undefined;
     return async (dispatch: Function) => {
         const dataFromCache = StorageUtils._retrieve(CommonConstants.stockDataCacheKey)
         if (dataFromCache.isValid && dataFromCache.data !== null) {
@@ -33,6 +34,20 @@ export const fetchStockList = () => {
           //  dispatch(saveActivelyTraded(res.most_actively_traded))
             return;
         }
+        // IFF Logged in fetch the TRade Book 
+         const res = StorageUtils._retrieve(CommonConstants.fyersToken);
+        if (res.isValid && res.data !== null) {
+            
+            let auth_code = res.data['auth_code'];
+            if (auth_code&& auth_code !== null && auth_code !== undefined) {
+                console.log("User is Authorized ");
+                //clearInterval(globalUserCheck);
+            }
+            else{
+                console.log("User is awaiting authorization ");
+            }
+        }
+
         try {
             dispatch(enableLoader())
             const res = await API.get('/', {params: {function: 'TOP_GAINERS_LOSERS' , apikey:CommonConstants.apiKey}})
@@ -61,6 +76,13 @@ export const fetchMoreStocks = (_gainers: any, _losers: any, _activelyTraded: an
             dispatch(saveGainers([..._gainers, ...res.data.top_gainers]))
             dispatch(saveLosers([..._losers, ...res.data.top_losers]))
             dispatch(saveActivelyTraded([..._activelyTraded, ...res.data.most_actively_traded]))
+            dispatch(getHoldingData);
+             const resholdings =   StorageUtils._retrieve(CommonConstants.holdingsDataCacheKey)
+            console.log("holdings " + resholdings.data)
+            if(resholdings !== null && resholdings.data !==null && resholdings.data !==undefined) { 
+                 console.log("saved holdings data  " + resholdings.data)
+             dispatch(saveHoldingData([ ...resholdings.data]))
+             }
         } catch (error) {
             console.log(error)
             return error

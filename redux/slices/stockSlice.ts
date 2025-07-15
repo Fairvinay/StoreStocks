@@ -6,7 +6,8 @@ export interface StockSliceProps {
     activelyTraded: any,
     searchResults: any,
     companyData: any,
-    selectedCard: any
+    selectedCard: any,
+    holdingData:any
 }
 const initialState:StockSliceProps = {
     gainers: null,
@@ -14,7 +15,8 @@ const initialState:StockSliceProps = {
     searchResults: null,
     activelyTraded: null,
     companyData: null,
-    selectedCard: null
+    selectedCard: null,
+    holdingData:null
 }
 
 
@@ -40,10 +42,15 @@ const stockSlice = createSlice({
         },
         saveCompanyData: (state, action) => {
             state.companyData=action.payload
+        },
+         saveHoldingData: (state, action) => {
+            state.holdingData=action.payload
         }
     },
 })
 
-export const { saveGainers, saveSelectedCard, saveActivelyTraded, saveCompanyData, saveLosers, saveResults } = stockSlice.actions;
+export const { saveGainers, saveSelectedCard, saveActivelyTraded, saveCompanyData, saveLosers, saveResults,
+    saveHoldingData
+ } = stockSlice.actions;
 
 export default stockSlice.reducer;

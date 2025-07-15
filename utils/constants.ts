@@ -1,4 +1,75 @@
-
+const otherHoldingData = JSON.stringify({
+    "code": 200,
+    "message": "",
+    "s": "ok",
+    "overall": {
+        "count_total": 2,
+        "pnl_perc": -1.529,
+        "total_current_value": 12531.6,
+        "total_investment": 37642.15,
+        "total_pl": -575.5499999999984
+    },
+    "holdings": [
+        {
+            "costPrice": 1456.35,
+            "id": 0,
+            "fyToken": "10100000009581",
+            "symbol": "NSE:METROPOLIS-EQ",
+            "isin": "INE112L01020",
+            "quantity": 9,
+            "exchange": 10,
+            "segment": 10,
+            "qty_t1": 0,
+            "remainingQuantity": 9,
+            "collateralQuantity": 0,
+            "remainingPledgeQuantity": 9,
+            "pl": -575.5499999999984,
+            "ltp": 1392.4,
+            "marketVal": 12531.6,
+            "holdingType": "HLD"
+        },
+     ]
+});       
+const  otherObjHoldingData =  JSON.parse(otherHoldingData);
+const  otherTradeData = 
+JSON.stringify([  
+       {  "clientId":"FXXXXX",
+                "orderDateTime":"11-July-2025 13:51:12",
+                "orderNumber":"120080789075",
+                "exchangeOrderNo": "1200000009204725",
+                "exchange":10,
+                "side":1,
+                "segment":10,
+                "orderType":2,
+                "fyToken":"101000000010666",
+                "productType":"CNC",
+                "tradedQty":1 ,
+                "tradePrice":932.7,
+                "tradeValue":927.0,
+                "tradeNumber":"52605023",
+                "row":52605023,
+                "symbol":"NSE:BAJAJFIN-EQ",
+                "orderTag": "1:Ordertag"
+        },
+        { "clientId":"FXXXXX",
+                "orderDateTime":"11-July-2025 13:51:12",
+                "orderNumber":"120080789075",
+                "exchangeOrderNo": "1200000009204725",
+                "exchange":10,
+                "side":1,
+                "segment":10,
+                "orderType":2,
+                "fyToken":"101000000010666",
+                "productType":"CNC",
+                "tradedQty":10,
+                "tradePrice":932.7,
+                "tradeValue":9327.0,
+                "tradeNumber":"52605023",
+                "row":52605023,
+                "symbol":"NSE:GABRIEL-EQ",
+                "orderTag": "1:Ordertag"
+        }  ]);
+const  otherObjTradeData =  JSON.parse(otherTradeData);
 const  otherData = JSON.stringify([  
        {
             "symbol": "BALUFORGE.BSE",
@@ -59,6 +130,11 @@ export const CommonConstants = {
     symbolDataKey: '1. symbol',
      recentSearchesKey: 'recentSearches',
      recentEquitiesKey: 'recentEquities',
+     recentTradesKey: 'recentTrades',
+     recentHoldingsKey:'recentHoldings',
+     tradeDataCacheKey: 'tradeData',
+      holdingsDataCacheKey: 'holdingsData',
+      orderDataCacheKey: 'orderData',
    // recentSearchesKey: 'CKFRQC4GPZQUB56W',
    // stockDataCacheKey: 'stockData',
     stockDataCacheKey:   'stockData' ,
@@ -70,7 +146,10 @@ export const CommonConstants = {
     // companyDataCacheKey: 'CKFRQC4GPZQUB56W',
      apiKey: 'CKFRQC4GPZQUB56W',
      sampleDataVersion1 :  JSON.stringify( { "top_gainers":  otherObjData ,  "top_losers":loserObjData } ),
-}
+      sampleTradeDataVersion1 :  JSON.stringify(      otherObjTradeData) ,
+       sampleTradeDataEmpty1 :  JSON.stringify(    []) ,
+     sampleHoldingDataVersion1:  JSON.stringify(      otherObjHoldingData) 
+    }
 
 /*  JSON.stringify( { "top_gainers":  otherData ,  "top_losers":loserData } )
 stockData

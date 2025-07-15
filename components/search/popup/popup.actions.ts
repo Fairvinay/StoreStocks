@@ -64,6 +64,7 @@ export const fetchSearchResults = (_query: string, equities:any,  setTypes: Func
                  console.log("_query "+JSON.stringify(_query));
                  let nsesym = `NSE:${_query.toUpperCase()}`;
                   console.log(" searching in euities for  "+JSON.stringify(nsesym));
+                  if(equities !==undefined && equities.bestMatches !== null && equities.bestMatches !== undefined){
                 const uniqueTypes: Array<string> = Array.from(new Set(equities.bestMatches.map((item: any) =>  item['3. type']
                  )));
                 const uniqueSearches: Array<string> = Array.from(new Set(equities.bestMatches.map((item: any) => {
@@ -105,7 +106,7 @@ export const fetchSearchResults = (_query: string, equities:any,  setTypes: Func
                     }
                    
                 }       
- 
+                 }
 
              }
              else {  // use the regular alph-vantage process 
@@ -134,9 +135,9 @@ export const fetchSearchResults = (_query: string, equities:any,  setTypes: Func
 
 
         } catch (error) {
-            
+              console.log("second try alpha-vantage error  " +JSON.stringify(error));
              const res = await API.get('/', {params: {function: 'SYMBOL_SEARCH', keywords: _query, apikey: NEXT_PUBLIC_API_KEY }})
-
+            if(res.data.bestMatches != null && res.data.bestMatches !== undefined) {
             const uniqueTypes: Array<string> = Array.from(new Set(res.data.bestMatches.map((item: any) => item['3. type'])))
             const uniqueTypesArr = ['All', ...uniqueTypes]
             console.log("second try alpha-vantage uniqueTypesArr "+JSON.stringify(uniqueTypesArr));
@@ -150,7 +151,7 @@ export const fetchSearchResults = (_query: string, equities:any,  setTypes: Func
             } else {
                 dispatch(saveRecentSearches([_query]));
             } 
- 
+             }
             return error
         } finally {
             setLoading(false)

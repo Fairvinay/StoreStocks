@@ -11,6 +11,7 @@ import {ThemeProvider} from "@/providers/ThemeProvider";
 import { EquityReduxProvider } from '@/providers/EquityReduxProvider';
 import Analytics from './analytics/Analytics';
 import Script from "next/script"
+import { TradeReduxProvider } from '@/providers/TradeReduxProvider';
 const inter = Inter({subsets: ['latin']})
 
 
@@ -55,12 +56,14 @@ export default function RootLayout({
         
         <ReduxProvider>
             <EquityReduxProvider>
+                <TradeReduxProvider>
             <ThemeProvider>
                 <>  <Analytics />
                     <Toaster/>
                     {children}
                 </>
             </ThemeProvider>
+             </TradeReduxProvider>
             </EquityReduxProvider>
         </ReduxProvider>
         </body>

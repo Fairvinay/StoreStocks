@@ -602,6 +602,335 @@ router.get('/fyersgetquote', async function (req,res) {
 	 }
 
 });
+
+// GET FYERS TRADE BOOK 
+//Curl Request Method
+//curl -H "Authorization: app_id:access_token" https://api-t1.fyers.in/api/v3/tradebook
+/*
+-------------------------------------------------------------------
+Sample Success Response
+-------------------------------------------------------------------
+{
+  "s": "ok",
+  "code": 200,
+  "message": "",
+  "tradeBook":
+              [{
+                "clientId":"FXXXXX",
+                "orderDateTime":"07-Aug-2020 13:51:12",
+                "orderNumber":"120080789075",
+                "exchangeOrderNo": "1200000009204725",
+                "exchange":10,
+                "side":1,
+                "segment":10,
+                "orderType":2,
+                "fyToken":"101000000010666",
+                "productType":"CNC",
+                "tradedQty":10,
+                "tradePrice":32.7,
+                "tradeValue":327.0,
+                "tradeNumber":"52605023",
+                "row":52605023,
+                "symbol":"NSE:PNB-EQ",
+                "orderTag": "1:Ordertag"
+}]
+
+}
+*/
+router.get('/fyersgettradebook', async function (req,res) {
+
+    let symbol = ''; let apikey = '';
+	let authcode =  global_auth_code;
+	if( req.query !== null && req.query !== undefined ){
+		console.log(" FYERS fyersgettradebook QUERY PARAMS " +JSON.stringify(req.query))
+		var queryJSON  = JSON.parse(JSON.stringify(req.query));
+		symbol = queryJSON['symbol'];
+		  apikey =queryJSON['apikey'];
+		  authcode= queryJSON['auth_code'];
+		// global_auth_code= auth_code;
+		 console.log(`symbol : ${symbol}  code : ${apikey}  auth_code:  ${authcode} `);
+	}
+	
+	
+	//if( symbol !==null && symbol !== undefined && symbol !== ''){
+	//	console.log("Symbol : "+symbol); 
+	  if( authcode !==null && authcode !== undefined && authcode !== ''){
+		console.log("FYERS Initiatied Successfully ") 
+		let fyersAccess= false;
+		fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
+			if(response.s=='ok'){
+				fyers.setAccessToken(response.access_token)
+				console.log("FYERS Grants provided  ") 
+                fyers.get_tradebook().then((response)=>{
+					console.log("FYERS Trade book requested  ") 
+					console.log(response)
+    				 setCORSHeaders( res )
+					 res.send(response);
+					 
+
+				}).catch((err)=>{
+					console.log("FYERSTrade book no reach ..  ")
+					 setCORSHeaders( res )
+					res.send(JSON.stringify({"FYERS": "FYERS Trade book CALL NO REACH "}));
+					//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS PROFILE CALL FAILED "})
+					console.log(err)
+				})
+
+			}else{
+				console.log("error generating access token",JSON.stringify(response.data));
+				 setCORSHeaders( res )
+				res.send(JSON.stringify({"FYERS": "FYERS ACCESS FAILED "}));
+				//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS ACCESS FAILED "})
+			}
+		})
+	   }
+	   else {
+		console.log("FYERS Initialization issues ... ") 
+		 setCORSHeaders( res )
+		res.send(JSON.stringify({"FYERS": " AUTH CODE INVALID "}));
+		//showFYERSPROFILEQUOTES(req,res,{"FYERS": " AUTH CODE INVALID "})
+	   }
+	// }else {
+	//	console.log("FYERS Initialization issues ... ") ;
+	//	 setCORSHeaders( res )
+	//	res.send(JSON.stringify({"FYERS": "  INVALID "}));
+		//showFYERSPROFILEQUOTES(req,res,{"FYERS": " SYMBOL INVALID "})
+	// }
+
+});
+
+
+/*
+-------------------------------------------------------------------------------------------------------------------
+ Sample success Response  
+-------------------------------------------------------------------------------------------------------------------
+{
+    "code": 200,
+    "message": "",
+    "s": "ok",
+    "overall": {
+        "count_total": 2,
+        "pnl_perc": -1.529,
+        "total_current_value": 12531.6,
+        "total_investment": 37642.15,
+        "total_pl": -575.5499999999984
+    },
+    "holdings": [
+        {
+            "costPrice": 1456.35,
+            "id": 0,
+            "fyToken": "10100000009581",
+            "symbol": "NSE:METROPOLIS-EQ",
+            "isin": "INE112L01020",
+            "quantity": 9,
+            "exchange": 10,
+            "segment": 10,
+            "qty_t1": 0,
+            "remainingQuantity": 9,
+            "collateralQuantity": 0,
+            "remainingPledgeQuantity": 9,
+            "pl": -575.5499999999984,
+            "ltp": 1392.4,
+            "marketVal": 12531.6,
+            "holdingType": "HLD"
+        },
+        {
+            "costPrice": 490.7,
+            "id": 1,
+            "fyToken": "101000000014732",
+            "symbol": "NSE:DLF-EQ",
+            "isin": "INE271C01023",
+            "quantity": 50,
+            "exchange": 10,
+            "segment": 10,
+            "qty_t1": 0,
+            "remainingQuantity": 0,
+            "collateralQuantity": 0,
+            "remainingPledgeQuantity": 0,
+            "pl": 0,
+            "ltp": 514.3,
+            "marketVal": 0,
+            "holdingType": "HLD"
+        }
+    ]
+}
+*/
+
+router.get('/fyersgetholdings', async function (req,res) {
+
+    let symbol = ''; let apikey = '';
+	let authcode =  global_auth_code;
+	if( req.query !== null && req.query !== undefined ){
+		console.log(" FYERS fyersgetholdings QUERY PARAMS " +JSON.stringify(req.query))
+		var queryJSON  = JSON.parse(JSON.stringify(req.query));
+		symbol = queryJSON['symbol'];
+		  apikey =queryJSON['apikey'];
+		  authcode= queryJSON['auth_code'];
+		// global_auth_code= auth_code;
+		 console.log(`symbol : ${symbol}  code : ${apikey}  auth_code:  ${authcode} `);
+	}
+	
+	
+	//if( symbol !==null && symbol !== undefined && symbol !== ''){
+	//	console.log("Symbol : "+symbol); 
+	  if( authcode !==null && authcode !== undefined && authcode !== ''){
+		console.log("FYERS Initiatied Successfully ") 
+		let fyersAccess= false;
+		fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
+			if(response.s=='ok'){
+				fyers.setAccessToken(response.access_token)
+				console.log("FYERS Grants provided  ") 
+                fyers.get_holdings().then((response)=>{
+					console.log("FYERS Holdings requested  ") 
+					console.log(response)
+    				 setCORSHeaders( res )
+					 res.send(response);
+					 
+
+				}).catch((err)=>{
+					console.log("FYERS Holdigns no reach ..  ")
+					 setCORSHeaders( res )
+					res.send(JSON.stringify({"FYERS": "FYERS Holdinges CALL NO REACH "}));
+					//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS PROFILE CALL FAILED "})
+					console.log(err)
+				})
+
+			}else{
+				console.log("error generating access token",JSON.stringify(response.data));
+				 setCORSHeaders( res )
+				res.send(JSON.stringify({"FYERS": "FYERS ACCESS FAILED "}));
+				//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS ACCESS FAILED "})
+			}
+		})
+	   }
+	   else {
+		console.log("FYERS Initialization issues ... ") 
+		 setCORSHeaders( res )
+		res.send(JSON.stringify({"FYERS": " AUTH CODE INVALID "}));
+		//showFYERSPROFILEQUOTES(req,res,{"FYERS": " AUTH CODE INVALID "})
+	   }
+	// }else {
+	//	console.log("FYERS Initialization issues ... ") ;
+	//	 setCORSHeaders( res )
+	//	res.send(JSON.stringify({"FYERS": "  INVALID "}));
+		//showFYERSPROFILEQUOTES(req,res,{"FYERS": " SYMBOL INVALID "})
+	// }
+
+});
+
+/*curl -H "Authorization: app_id:access_token" https://api-t1.fyers.in/api/v3/orders
+
+---------------------------------------------------------------------------------------------------------------------------------------------
+ Sample Success Response 
+---------------------------------------------------------------------------------------------------------------------------------------------
+Response structure:
+{
+  "s": "ok",
+  "code": 200,
+  "message": "",
+  "orderBook": [{
+      "clientId": "X******",
+      "id": "23030900015105",
+      "exchOrdId": "1100000001089341",
+      "qty": 1,
+      "remainingQuantity": 0,
+      "filledQty": 1,
+      "discloseQty": 0,
+      "limitPrice": 6.95,
+      "stopPrice": 0,
+      "tradedPrice": 6.95,
+      "type": 1,
+      "fyToken": "101000000014366",
+      "exchange": 10,
+      "segment": 10,
+      "symbol": "NSE:IDEA-EQ",
+      "instrument": 0,
+      "message": "",
+      "offlineOrder": False,
+      "orderDateTime": "09-Mar-2023 09:34:38",
+      "orderValidity": "DAY",
+      "pan": "",
+      "productType": "CNC",
+      "side": -1,
+      "status": 2,
+      "source": "W",
+      "ex_sym": "IDEA",
+      "description": "VODAFONE IDEA LIMITED",
+      "ch": -0.1,
+      "chp": -1.44,
+      "lp": 6.85,
+      "slNo": 1,
+      "dqQtyRem": 0,
+      "orderNumStatus": "23030900015105:2",
+      "disclosedQty": 0,
+      "orderTag": "1:Ordertag"
+  }]
+}
+
+*/
+
+router.get('/fyersgetorderbook', async function (req,res) {
+
+    let symbol = ''; let apikey = '';
+	let authcode =  global_auth_code;
+	if( req.query !== null && req.query !== undefined ){
+		console.log(" FYERS fyersgetorderbook QUERY PARAMS " +JSON.stringify(req.query))
+		var queryJSON  = JSON.parse(JSON.stringify(req.query));
+		symbol = queryJSON['symbol'];
+		  apikey =queryJSON['apikey'];
+		  authcode= queryJSON['auth_code'];
+		// global_auth_code= auth_code;
+		 console.log(`symbol : ${symbol}  code : ${apikey}  auth_code:  ${authcode} `);
+	}
+	
+	
+	//if( symbol !==null && symbol !== undefined && symbol !== ''){
+	//	console.log("Symbol : "+symbol); 
+	  if( authcode !==null && authcode !== undefined && authcode !== ''){
+		console.log("FYERS Initiatied Successfully ") 
+		let fyersAccess= false;
+		fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
+			if(response.s=='ok'){
+				fyers.setAccessToken(response.access_token)
+				console.log("FYERS Grants provided  ") 
+                fyers.get_orders().then((response)=>{
+					console.log("FYERS orderbook requested  ") 
+					console.log(response)
+    				 setCORSHeaders( res )
+					 res.send(response);
+					 
+
+				}).catch((err)=>{
+					console.log("FYERS orderbook no reach ..  ")
+					 setCORSHeaders( res )
+					res.send(JSON.stringify({"FYERS": "FYERS orderbook CALL NO REACH "}));
+					//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS PROFILE CALL FAILED "})
+					console.log(err)
+				})
+
+			}else{
+				console.log("error generating access token",JSON.stringify(response.data));
+				 setCORSHeaders( res )
+				res.send(JSON.stringify({"FYERS": "FYERS ACCESS FAILED "}));
+				//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS ACCESS FAILED "})
+			}
+		})
+	   }
+	   else {
+		console.log("FYERS Initialization issues ... ") 
+		 setCORSHeaders( res )
+		res.send(JSON.stringify({"FYERS": " AUTH CODE INVALID "}));
+		//showFYERSPROFILEQUOTES(req,res,{"FYERS": " AUTH CODE INVALID "})
+	   }
+	// }else {
+	//	console.log("FYERS Initialization issues ... ") ;
+	//	 setCORSHeaders( res )
+	//	res.send(JSON.stringify({"FYERS": "  INVALID "}));
+		//showFYERSPROFILEQUOTES(req,res,{"FYERS": " SYMBOL INVALID "})
+	// }
+
+});
+
 // STEP BASIC CATCH for FYERS GoodStoreNotify App  FYERS redirect_uri
 router.get('/fyersauthcodeverifyold', async function (req,res) {
 

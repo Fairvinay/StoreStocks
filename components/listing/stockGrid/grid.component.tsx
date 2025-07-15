@@ -13,6 +13,7 @@ const StockGrid = () => {
     const gainers = useSelector((state: GlobalState) => state.stock.gainers)
     const losers = useSelector((state: GlobalState) => state.stock.losers)
     const activelyTraded = useSelector((state: GlobalState) => state.stock.activelyTraded)
+    const holdings = useSelector((state: GlobalState) => state.holding.holdingBook)
     const tab = useSelector((state: GlobalState) => state.misc.tab)
     const dispatch = useAppDispatch()
     const loader = useSelector((state: GlobalState) => state.misc.loader)
