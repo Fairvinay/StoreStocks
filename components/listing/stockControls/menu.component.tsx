@@ -15,6 +15,7 @@ import { AnyNode } from 'postcss';
 const arr = [
     {key: 1, title: "Top Gainers"},
     {key: 2, title: "Top Losers"},
+    {key: 3, title: "Top Traders"},
 ]
 const sortMapper = [
     {key: 1, title: "Sort by percentage"},
@@ -117,6 +118,21 @@ const Menu = () => {
             dispatch(saveActivelyTraded(sortedData))
         }
     }
+    const checkUserLogged = () => { 
+                 // IFF Logged in cehck
+        let logd = false;
+         const res1 = StorageUtils._retrieve(CommonConstants.fyersToken);
+        if (res1.isValid && res1.data !== null) {
+            
+            let auth_code = res1.data['auth_code'];
+            if (auth_code&& auth_code !== null && auth_code !== undefined) {
+                console.log("User is Authorized ");
+                logd = true;
+            }
+
+        }
+        return logd;
+    }
     const logByPlatform = () => {
         // check platform type is alpha-vantage or fyers
         // currentPlatform
@@ -132,9 +148,15 @@ const Menu = () => {
 
                    let fyerLoginProm =  ( async () => {
                         //{params: {function: 'TOP_GAINERS_LOSERS' , apikey:CommonConstants.apiKey}}
-
+                        let res :any = undefined;
+                     if (!checkUserLogged()) { 
                       //let res =  await FYERSAPI.get('/fyerscallback' )
-                      let res =   popupCenter(FYERSAPILOGINURL, "Fyers Signin")
+                        res =   popupCenter(FYERSAPILOGINURL, "Fyers Signin")
+                      }
+                      else {
+                        res = true;
+                         StorageUtils._save(CommonConstants.globalUserCheck, 'false')
+                      }
                         return res;
                     }) ;
                     const result = Promise.all([    fyerLoginProm()]);
@@ -157,7 +179,9 @@ const Menu = () => {
                             }
                         }
                      },5000);
-
+                     // NOTE the globalUserCheck in the Storage and regularly clear it when user authenticated 
+                        StorageUtils._save(CommonConstants.globalUserCheck, globalUserCheck)
+           
                    // const res = StorageUtils._retrieve(CommonConstants.fyersToken );
                     
                 } catch (error) {
@@ -190,7 +214,7 @@ const Menu = () => {
                     className='p-2 focus-visible:outline-none block md:hidden rounded-lg bg-greylight dark:bg-greydark text-gretdark dark:text-white '>
                 <option>Top Gainers</option>
                 <option>Top Losers</option>
-                <option>Most Actively Traded</option>
+                <option>Top Trades</option>
             </select>
             <div className='hidden md:flex relative flex-wrap items-center justify-between'>
                 {

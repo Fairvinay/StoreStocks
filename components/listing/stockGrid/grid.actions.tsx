@@ -1,8 +1,10 @@
 import { getHoldingData } from "@/components/company/holdings/holdings.actions"
+import { getTradeData } from "@/components/company/trade/tradeBook.actions"
 import {StorageUtils} from "@/libs/cache"
 import {API} from "@/libs/client"
 import {disableLoader, enableLoader} from "@/redux/slices/miscSlice"
 import {saveActivelyTraded, saveGainers, saveLosers , saveHoldingData } from "@/redux/slices/stockSlice"
+import { saveTradeBook } from "@/redux/slices/tradeSlice"
 import {CommonConstants} from "@/utils/constants"
 import toast from "react-hot-toast"
 
@@ -55,6 +57,24 @@ export const fetchStockList = () => {
             dispatch(saveGainers(res.data.top_gainers))
             dispatch(saveLosers(res.data.top_losers))
             dispatch(saveActivelyTraded(res.data.most_actively_traded))
+             // FETHE TRAADE BOOK DATA 
+            dispatch(getTradeData(''));
+            // FETH The recentTRades from storage if above call succeeded data will be there
+            let redentTradeData =  StorageUtils._retrieve(CommonConstants.recentTradesKey)
+            const dataFromCache = StorageUtils._retrieve(CommonConstants.tradeDataCacheKey)
+            if( redentTradeData !== null && redentTradeData !==undefined  &&  Array.isArray(redentTradeData.data )){
+                 console.log(" GRID aCTIONS recenTrades  "+JSON.stringify(redentTradeData.data))
+
+            }else {
+                console.log("trade data fro cahce ")
+                redentTradeData = dataFromCache;
+            }
+            dispatch( saveTradeBook(([...redentTradeData.data])));
+
+
+
+
+
         } catch (error) {
             // @ts-ignore
             const {message} = error
@@ -83,6 +103,24 @@ export const fetchMoreStocks = (_gainers: any, _losers: any, _activelyTraded: an
                  console.log("saved holdings data  " + resholdings.data)
              dispatch(saveHoldingData([ ...resholdings.data]))
              }
+
+              // FETHE TRAADE BOOK DATA 
+            dispatch(getTradeData(''));
+            // FETH The recentTRades from storage if above call succeeded data will be there
+            let redentTradeData =  StorageUtils._retrieve(CommonConstants.recentTradesKey)
+            const dataFromCache = StorageUtils._retrieve(CommonConstants.tradeDataCacheKey)
+            if( redentTradeData !== null && redentTradeData !==undefined  &&  Array.isArray(redentTradeData.data )){
+                 console.log(" GRID aCTIONS recenTrades  "+JSON.stringify(redentTradeData.data))
+
+            }else {
+                console.log("trade data fro cahce ")
+                redentTradeData = dataFromCache;
+            }
+            dispatch( saveTradeBook(([...redentTradeData.data])));
+
+
+
+
         } catch (error) {
             console.log(error)
             return error
