@@ -139,6 +139,7 @@ export const CommonConstants = {
    // stockDataCacheKey: 'stockData',
     stockDataCacheKey:   'stockData' ,
     fyersToken :"fyersToken",
+    globalUserCheck :"userPollKey",
     platFormKey:   'api-key' ,
     sampleData :  JSON.stringify( { "top_gainers":  otherData ,  "top_losers":loserData } ),
     //stockDataCacheKey: 'CKFRQC4GPZQUB56W',
