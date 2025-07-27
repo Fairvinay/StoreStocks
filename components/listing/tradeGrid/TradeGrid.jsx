@@ -9,7 +9,7 @@ import './tradestyles.css'; // ✅ No 'tradestyles.'
 import {useDispatch, useSelector} from 'react-redux';
 import { getTradeData } from "./tradeGridBook.actions";
 import {API, FYERSAPI, FYERSAPILOGINURL} from "@/libs/client"
-
+import StreamToggleButton from './StreamToggleButton';
 
 const TradeGrid = ({ tradeDataB   }) => {
   StorageUtils._save(CommonConstants.tradeDataCacheKey,CommonConstants.sampleTradeDataVersion1);
@@ -290,7 +290,7 @@ const getSortIndicator = (column) =>
         <br/>
         <br/>
       <h1 className='text-black font-semibold mb-2 dark:text-white text-lg'>Trade Book</h1>
-       <div className="hidden md:flex relative items-center">
+       <div className="hidden md:flex flex justify-between  relative items-center">
                  {/* 
                   <select className="p-2 rounded-lg bg-greylight dark:bg-greydark text-gretdark dark:text-white focus-visible:outline-none">
                   md:hidden
@@ -309,6 +309,100 @@ const getSortIndicator = (column) =>
                 <option value={2}>Fyers</option>
                </select>
              </div>
+       {/*  CLICK MARKET DATA   TICKER FOR 3 BANKNIFY NIFTY and SENSEX  */}      
+   {/*  <div className="hidden md:flex relative items-center">
+                   
+                    
+               <i className="iconsax" type="linear" stroke-width="1.5" icon="toggle-off-square">Stream MARKET DATA</i>
+
+                <p id="sensex-status"> 
+                <span id="sensex-time"  style={{
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                      }}> </span>
+                <span id="sensex-symbol"  style={{
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                      }}> </span>
+                <span id="sensex-price"  style={{
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                    }}> </span>
+             </p>
+                 <p id="banknifty-status"> 
+                <span id="banknifty-time"  style={{
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                        }}> </span>
+               <span id="banknifty-symbol"  style={{
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                        }}> </span>
+               <span id="banknifty-price"  style={{
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                        }}> </span>
+             </p>
+            <p id="nifty-status"> 
+                <span id="nifty-time"  style={{
+                          padding: '4px 8px',
+                          borderRadius: '4px',
+                        }}> </span>
+                <span id="nifty-symbol"  style={{
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                      }}> </span>
+                <span id="nifty-price"  style={{
+                        padding: '4px 8px',
+                        borderRadius: '4px',
+                      }}> </span>
+             </p>
+      </div> */}
+       {/* Stream Market Data */}
+        <div className="flex flex-col md:flex-row justify-end gap-x-6 ml-auto">
+         {/*  <div className="flex items-center text-sm text-black dark:text-white font-medium">
+            <i className="iconsax mr-2" data-icon="toggle-off-square" />
+            Stream MARKET DATA
+          </div>*/}
+            <StreamToggleButton />
+
+          <p id="sensex-status" className="flex gap-x-2 items-center">
+            <div className="flex flex-col items-start gap-y-1">
+            <div className="flex" >
+              <div className="flex justify-start">
+              SENSEX</div>
+               <div className="flex justify-end" ><span id="sensex-time" className="px-4 rounded bg-gray-100">--</span></div> 
+              
+               </div>
+            
+           <div className="flex justify-start"> 
+            <span id="sensex-symbol" className="px-2 py-1 rounded bg-gray-100">--</span>
+            <span id="sensex-price" className="px-2 py-1 rounded bg-gray-100">--</span>
+             </div>
+             </div>
+          </p>
+
+          <p id="banknifty-status" className="flex gap-x-2 items-center">
+             <div className="flex flex-col items-start gap-y-1">
+            <div>BANKNIFTY </div>
+            <div className="flex justify-start"> <span id="banknifty-time" className="px-2 py-1 rounded bg-gray-100">--</span>
+            <span id="banknifty-symbol" className="px-2 py-1 rounded bg-gray-100">--</span>
+            <span id="banknifty-price" className="px-2 py-1 rounded bg-gray-100">--</span>
+            </div>
+            </div>
+          </p>
+
+          <p id="nifty-status" className="flex gap-x-2 items-center">
+             <div className="flex flex-col items-start gap-y-1">
+             <div>  NIFTY </div>
+             <div className="flex justify-start"><span id="nifty-time" className="px-2 py-1 rounded bg-gray-100">--</span>
+            <span id="nifty-symbol" className="px-2 py-1 rounded bg-gray-100">--</span>
+            <span id="nifty-price" className="px-2 py-1 rounded bg-gray-100">--</span>
+            </div>
+            </div>
+          </p>
+        </div>
+          <br/>
 
       <table className="min-w-full text-sm text-left border border-gray-200 shadow-md rounded-lg overflow-hidden">
         <thead className="bg-gray-100 text-gray-700 font-semibold">

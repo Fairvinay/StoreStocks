@@ -1,3 +1,45 @@
+
+const niftyTicker = JSON.stringify(
+    {
+    "symbol": 'NSE:NIFTY50-INDEX',
+    "ltp": 24833.55,
+    "prev_close_price":  24883.55,
+    "high_price":  24933.55,
+    "low_price": 24733.55,
+    "open_price":  25023.55,
+    "ch": -20.25,
+    "chp": -0.1,
+    "type": 'if'
+  }
+);  
+const niftyTickerData =  JSON.parse(niftyTicker);
+
+const sensexTicker = JSON.stringify(
+    {
+    "symbol": 'BSE:SENSEX-INDEX',
+    "ltp": 81433.55,
+    "prev_close_price": 81463.55,
+    "high_price": 81933.55,
+    "low_price": 81233.55,
+    "open_price": 81673.55,
+    "ch": -20.25,
+    "chp": -0.1,
+    "type": 'if'
+  }
+);  
+const  sensexTickerData =  JSON.parse(sensexTicker);
+
+const sensexThreeSec = JSON.stringify(
+    {
+         "message":"","code":200,"d":[{"n":"BSE:SENSEX-INDEX","v":{"ask":0,"bid":0,"chp":-0.88,"ch":-721.08,"description":"BSE:SENSEX-INDEX","exchange":"BSE","fyToken":"12100000001","high_price":82069.51,"low_price":81397.69,"lp":81463.09,"open_price":82065.76,"original_name":"BSE:SENSEX-INDEX","prev_close_price":82184.17,"short_name":"SENSEX-INDEX","spread":0,"symbol":"BSE:SENSEX-INDEX","tt":"1753574400","volume":0,"atp":0},"s":"ok"}],"s":"ok"
+
+    }
+)
+
+const sensexThreeSecData =  JSON.parse(sensexThreeSec);
+
+
+
 const otherHoldingData = JSON.stringify({
     "code": 200,
     "message": "",
@@ -131,8 +173,14 @@ export const CommonConstants = {
      recentSearchesKey: 'recentSearches',
      recentEquitiesKey: 'recentEquities',
      recentTradesKey: 'recentTrades',
+     recentSensexTickersKey: 'recentSensexTickers',
+     recentThreeSensexQuoteKey: 'recentThressSensexQuoteKey',
+     recentTickerToken: 'recentTickerToken',
      recentHoldingsKey:'recentHoldings',
      tradeDataCacheKey: 'tradeData',
+     tickerSensexDataCacheKey: 'sensexTicker',
+     threeSecSensexDataCacheKey: 'sensexThreeSec',
+     tickerNiftyDataCacheKey: 'niftyTicker',
       holdingsDataCacheKey: 'holdingsData',
       orderDataCacheKey: 'orderData',
    // recentSearchesKey: 'CKFRQC4GPZQUB56W',
@@ -149,7 +197,10 @@ export const CommonConstants = {
      sampleDataVersion1 :  JSON.stringify( { "top_gainers":  otherObjData ,  "top_losers":loserObjData } ),
       sampleTradeDataVersion1 :  JSON.stringify(      otherObjTradeData) ,
        sampleTradeDataEmpty1 :  JSON.stringify(    []) ,
-     sampleHoldingDataVersion1:  JSON.stringify(      otherObjHoldingData) 
+     sampleHoldingDataVersion1:  JSON.stringify(      otherObjHoldingData) ,
+     sampleTickerSensexDataVersion1:  JSON.stringify(      sensexTickerData), 
+     sampleThreeSecSensexDataVersion1:  JSON.stringify(      sensexThreeSecData), 
+     sampleTickerNiftyDataVersion1:  JSON.stringify(      niftyTickerData) 
     }
 
 /*  JSON.stringify( { "top_gainers":  otherData ,  "top_losers":loserData } )

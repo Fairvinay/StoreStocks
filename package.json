@@ -11,7 +11,8 @@
   "dependencies": {
     "@analytics/google-tag-manager": "^0.6.0",
     "@ant-design/charts": "^1.4.2",
- "@netlify/plugin-nextjs": "^5.11.2",
+    "@netlify/functions": "^3.1.10",
+    "@netlify/plugin-nextjs": "^5.11.2",
     "@reduxjs/toolkit": "^1.9.7",
     "@vercel/analytics": "^1.5.0",
     "analytics": "^0.8.16",
@@ -24,6 +25,7 @@
     "https": "^1.0.0",
     "iconsax-react": "^0.0.8",
     "json-to-table": "^4.2.1",
+    "lucide-react": "^0.525.0",
     "next": "13.5.6",
     "node-fetch": "^3.3.2",
     "react": "^18",
