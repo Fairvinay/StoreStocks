@@ -12,8 +12,10 @@ import {API, FYERSAPI, FYERSAPILOGINURL} from "@/libs/client"
 import StreamToggleButton from './StreamToggleButton';
 
 //CUSTOME HOOK to DETECT MOBILE 
-import { useIsMobile } from "./useIsMobile";
-import { TradeBookMobileView as  MobileView } from "./TradeBookMobileView";
+//import { useIsMobile } from "./useIsMobile";
+ import   useIsMobile   from "./useIsMobile";
+
+import  {  TradeBookMobileView as  MobileView }   from "./TradeBookMobileView";
 
 const TradeGrid = ({ tradeDataB   }) => {
   StorageUtils._save(CommonConstants.tradeDataCacheKey,CommonConstants.sampleTradeDataVersion1);

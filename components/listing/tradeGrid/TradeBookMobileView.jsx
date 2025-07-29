@@ -5,7 +5,7 @@ import { StorageUtils } from "@/libs/cache";
 import tradeBook from './tradesample.json';
 import './tradestyles.css'; // ✅ No 'tradestyles.'
  // const TradeBookMobileView  =({ tradeDataB }) => {
-  const TradeBookMobileView  =({ sortedData, userLogged, handleSort ,getSortIndicator }) => {
+export  const  TradeBookMobileView  =({ sortedData, userLogged, handleSort ,getSortIndicator }) => {
  /* StorageUtils._save(CommonConstants.tradeDataCacheKey,CommonConstants.sampleTradeDataVersion1);
  //  const currentPlatform = useSelector((state ) => state.misc.platformType)
    const [parsedData, setParsedData] = useState(() => JSON.parse(StorageUtils._retrieve(CommonConstants.tradeDataCacheKey).data));
@@ -150,4 +150,4 @@ const getSortIndicator = (column) =>
     </div>
   );*/
 };
-export default TradeBookMobileView
+

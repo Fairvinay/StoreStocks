@@ -358,8 +358,8 @@ export const stopSensexTickerData =   (symb ) => {
 export const getSensexTickerData = (_id ) => {
       // SAMPLE TICKER DEFAULT DATA 
        console.log("getSensexTickerData: _id  "+JSON.stringify( _id))
-        
-      StorageUtils._save (CommonConstants.threeSecSensexDataCacheKey,CommonConstants.sampleThreeSecSensexDataVersion1);
+      // THIS CAUSE OVERRIDE DEFAULT SAMPLE DATA   
+      //StorageUtils._save (CommonConstants.threeSecSensexDataCacheKey,CommonConstants.sampleThreeSecSensexDataVersion1);
 
     return async (dispatch) => {
         const dataFromCache = StorageUtils._retrieve(CommonConstants.threeSecSensexDataCacheKey)
@@ -383,7 +383,8 @@ export const getSensexTickerData = (_id ) => {
                  console.log("getSensexTickerData: available exact  "+JSON.stringify( _id))
 
                 dispatch(saveQuoteBook(parsedData))
-                return;
+                // THIS RETUNRN CAUSING PROBLEM not FIRING the BELOW fyersgetbsecequote SENSEX QUOTE LIVE
+               // return;
             }else {
                  console.log("getSensexTickerData: available not exact symbol "+JSON.stringify( _id))
                   console.log("getSensexTickerData:  "+JSON.stringify(parsedData))
@@ -398,7 +399,7 @@ export const getSensexTickerData = (_id ) => {
              console.log("getSensexTickerData: unavailable  " )
         }
 
-        dispatch(enableLoader())
+       // dispatch(enableLoader())
 
 
         try {
@@ -441,31 +442,65 @@ export const getSensexTickerData = (_id ) => {
                             });
                         
                       //   const res = await API.get(FYERSAPITICKERACCESTOKEN , {params: { "auth_code" : auth_code }});
-                         const res = await API.get(FYERSAPITHREESECQUOTE , {params: { "auth_code" : auth_code }});
-                          const text = await res.data ;   
-                          let dArray = text.data["d"];
+                         const res = await API.get(FYERSAPITHREESECQUOTE , {params: { "auth_code" : auth_code ,"symbol":'SENSEX-INDEX'}});
+                       // Axios auto-parses JSON
+                      const responseData = res.data;
+                      let resJSON = responseData;
+                         // Safe parsing
+                       console.log("resJSON "+JSON.stringify(resJSON));
+                        console.log("resJSON?d "+JSON.stringify(resJSON?.d));
+                        console.log("Array.isArray(resJSON?.d) "+Array.isArray(resJSON?.d));
+                        console.log("resJSON.d.length "+resJSON.d.length);
+                      
+                      if (resJSON?.d && Array.isArray(resJSON?.d) && resJSON.d.length > 0) {
+                            const quoteData = resJSON.d[0];         // Full object with n, v, s
+                            const quoteValue = quoteData.v;          // Only the "v" part with pricing info
+
+                            // Optional: destructure needed fields
+                            const {
+                              lp, // last price
+                              chp, // change percentage
+                              ch,  // change in value
+                              high_price,
+                              low_price,
+                              open_price,
+                              prev_close_price,
+                              short_name, tt 
+                            } = quoteValue;
+                  
+                         /*     const text = await res.data ;   
+                            let parseAll = JSON.parse(text);
+                         console.log('text: ', JSON.stringify(text));
+                          console.log('parseAll: ', JSON.stringify(parseAll));
+                       let dArray = dataFromCache.data["d"] ? dataFromCache.data["d"] : (  parseAll.d ? parseAll.d : '') ;
+                           // let dArray = text.data["d"];
+                   if(dArray !==undefined && dArray !==null && Array.isArray(dArray)){
+                     console.log("dArray from server available  " +JSON.stringify(dArray))
                             let firstObj = dArray[0];
                             let vObj =  firstObj["v"];
                             let parsedData =  vObj;
-                            let parsedMetaData =vObj;
+                            let parsedMetaData =vObj;*/
 
 
-                        if (typeof parsedMetaData !== "undefined") {
+                        if (typeof lp !== "undefined" && typeof tt !== "undefined") {
                               console.log("Three Sec Quote Index availalbe.");
                              let eventSource = undefined;
     //https://192.168.1.7:8888/.netlify/functions/netlifystockfyersticker/api/fyersgetticker?authcode=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJUUkxWMkE2R1BMIiwidXVpZCI6IjZlYzNkZmNkZDJkNzQ5ZGJiNjg5YzU0ZmVlNDkwODU5IiwiaXBBZGRyIjoiIiwibm9uY2UiOiIiLCJzY29wZSI6IiIsImRpc3BsYXlfbmFtZSI6IlhWMzEzNjAiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiIzMDMwZjNjMDM2ZTUxYmE2YWNmZDg1YjQyMWM0MGY1NmRiOTQwODFlZTBlYjJjMzY3ZGE5OTExYiIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImF1ZCI6IltcImQ6MVwiLFwiZDoyXCIsXCJ4OjBcIixcIng6MVwiLFwieDoyXCJdIiwiZXhwIjoxNzUzNTYxODAwLCJpYXQiOjE3NTM1MzE4MDAsImlzcyI6ImFwaS5sb2dpbi5meWVycy5pbiIsIm5iZiI6MTc1MzUzMTgwMCwic3ViIjoiYXV0aF9jb2RlIn0.qvCe0YOusUY2mXpcZ-a4ZIhRgRZ69cf3lB1-RFO90bg&interval=1m&limit=100&ticker=BSE%3ASENSEX-INDEX
     //https://192.168.1.7:8888/.netlify/functions/netlifystockfyersticker/api/fyersgetticker/tickerpoll?authcode=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhcHBfaWQiOiJUUkxWMkE2R1BMIiwidXVpZCI6IjZlYzNkZmNkZDJkNzQ5ZGJiNjg5YzU0ZmVlNDkwODU5IiwiaXBBZGRyIjoiIiwibm9uY2UiOiIiLCJzY29wZSI6IiIsImRpc3BsYXlfbmFtZSI6IlhWMzEzNjAiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiIzMDMwZjNjMDM2ZTUxYmE2YWNmZDg1YjQyMWM0MGY1NmRiOTQwODFlZTBlYjJjMzY3ZGE5OTExYiIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImF1ZCI6IltcImQ6MVwiLFwiZDoyXCIsXCJ4OjBcIixcIng6MVwiLFwieDoyXCJdIiwiZXhwIjoxNzUzNTYxODAwLCJpYXQiOjE3NTM1MzE4MDAsImlzcyI6ImFwaS5sb2dpbi5meWVycy5pbiIsIm5iZiI6MTc1MzUzMTgwMCwic3ViIjoiYXV0aF9jb2RlIn0.qvCe0YOusUY2mXpcZ-a4ZIhRgRZ69cf3lB1-RFO90bg&interval=1m&limit=100&ticker=BSE%3ASENSEX-INDEX                        
                              let urlisPollActual= false; // eventSource.url.indexOf("tickerpolldummy") > -1 ? false: true;
-                              
-                                    console.log('Live data:', JSON.stringify(parsedMetaData));
+                              // SET the CACHE 
+                               StorageUtils._save(CommonConstants.threeSecSensexDataCacheKey,JSON.stringify(responseData));
+                             
+                                   // console.log('Live data:', JSON.stringify(quoteValue));
                                     let el = document.getElementById(SENSEXTICKERDOMID);  // GLOBAL DOM ID sensex-status
-                                    let tickerData = parsedMetaData;
-                                    let sym = tickerData["symbol"];
-                                    let price = tickerData["lp"];
-                                  
-                                    let time = localISTDateTimeSec(tickerData["tt"])
+                                    let tickerData = quoteValue;
+                                    let sym = 'SENSEX-INDEX';  // tickerData["symbol"];
+                                    let price = lp //  tickerData["lp"];
+                                   
+                                     let time =  localISTDateTimeSec(tt) ;// localISTDateTimeSec(tt)//tickerData["tt"]
                                     sensexQue.push({time:time, price :price});
-                                     updateBestMatches1(sensexQue);
+                                      console.log('time '+JSON.stringify(time) + "price  "+ price);  
+                                   //  updateBestMatches1(sensexQue);
                                     console.log("tick  "+JSON.stringify( { sym , price, time  }))
                                     if(el !==null && el !== undefined){
                                     // el.textContent = time + " :: "+ sym +" :: "+ price;
@@ -481,8 +516,11 @@ export const getSensexTickerData = (_id ) => {
                                         // update price and color based on previus price 
                                     let priceSpan = document.getElementById(SENSEXTICKERPRICE);
                                         if(priceSpan !==null && priceSpan !== undefined){
+                                      
+                                              priceElement.textContent = price;
 
-                                        updatePriceFromStream( price, SYMBOL);
+                                      // SKIPPED FOR NOW 
+                                       // updatePriceFromStream( price, SYMBOL);
                                        }
                                     }
                         }     else {
@@ -504,19 +542,22 @@ export const getSensexTickerData = (_id ) => {
                               dispatch(saveQuoteBook(bestMacthes.bestMatches)); 
                             
                             } 
-                      
+                   } // dArray is not a ARRAY 
+                   else { 
+                       console.log("Unable to parse the QUOTE FORMAT please check  "  );
+                   }
                          // other option to store int the context 
                           // updateEquityState({ equities: parsed }); // ✅ Save in context
                 
                       
                       
                      }catch (err ){
-
+                       console.log("Exception parsing QUOTE FORMAT please check  "+JSON.stringify(err)  );
                      }
                     
                    } //FOR LOOP 
                   }
-                   fetchThreeSecQuote();
+                  await  fetchThreeSecQuote();
 
 
                      console.log("Company View tirgger ticker  BOOK ..");
