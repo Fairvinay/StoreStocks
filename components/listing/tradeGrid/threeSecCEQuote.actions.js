@@ -434,15 +434,16 @@ export const getSensexTickerData = (_id ) => {
                        try {
                           const sym = 'BSE:SENSEX-INDEX';
                          const params = new URLSearchParams({
-                            authcode: auth_code ,  //  localStorage.getItem(tokenKey),
+                           // authcode: auth_code ,  //  localStorage.getItem(tokenKey),
                             interval: '1m',
                             limit: '100',
                             ticker:sym,
-                         //   access_token: acctoken
+                            access_token: acctoken
                             });
                         
                       //   const res = await API.get(FYERSAPITICKERACCESTOKEN , {params: { "auth_code" : auth_code }});
-                         const res = await API.get(FYERSAPITHREESECQUOTE , {params: { "auth_code" : auth_code ,"symbol":'SENSEX-INDEX'}});
+                     //    const res = await API.get(FYERSAPITHREESECQUOTE , {params: { "auth_code" : auth_code ,"symbol":'SENSEX-INDEX'}});
+                         const res = await API.get(FYERSAPITHREESECQUOTE , {params: { "access_token" : acctoken ,"symbol":'SENSEX-INDEX'}});
                        // Axios auto-parses JSON
                       const responseData = res.data;
                       let resJSON = responseData;
@@ -557,8 +558,12 @@ export const getSensexTickerData = (_id ) => {
                     
                    } //FOR LOOP 
                   }
-                  await  fetchThreeSecQuote();
+                    fetchAuthToken().then(async aces_token   => { 
+                       await  fetchThreeSecQuote(aces_token);
 
+
+                     });
+                 
 
                      console.log("Company View tirgger ticker  BOOK ..");
                     

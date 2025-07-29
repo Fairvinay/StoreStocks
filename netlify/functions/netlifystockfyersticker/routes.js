@@ -686,37 +686,40 @@ router.get('/fyersgetbsecequote', async function (req,res) {
 
     let symbol = ''; let apikey = '';
 	let authcode =  global_auth_code;
+	let access_token =  global_auth_code;
 	if( req.query !== null && req.query !== undefined ){
 		console.log(" FYERS fyersgetbsecequote QUERY PARAMS " +JSON.stringify(req.query))
 		var queryJSON  = JSON.parse(JSON.stringify(req.query));
 		symbol = queryJSON['symbol'];
 		  apikey =queryJSON['apikey'];
-		  authcode= queryJSON['auth_code'];
+		//  authcode= queryJSON['auth_code'];
+		  access_token= queryJSON['access_token'];
 		// global_auth_code= auth_code;
-		 console.log(`symbol : ${symbol}  code : ${apikey}  auth_code:  ${authcode} `);
+		 console.log(`symbol : ${symbol}  code : ${apikey}  auth_code:  ${authcode}  access_token : ${access_token}`);
 	}
 	
 	
 	if( symbol !==null && symbol !== undefined && symbol !== ''){
 		console.log("Symbol : "+symbol); 
-	  if( authcode !==null && authcode !== undefined && authcode !== ''){
+	  if( access_token !==null && access_token !== undefined && access_token !== ''){
 		console.log("FYERS Initiatied Successfully ") 
 		let fyersAccess= false;
-		fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
-			if(response.s=='ok'){
-				fyers.setAccessToken(response.access_token)
+		//fyers.generate_access_token({"client_id":client_id,"secret_key":secret_key,"auth_code":authcode}).then((response)=>{
+			//if(response.s=='ok'){
+			 if(fyers !==null && fyers !== undefined){ 
+				fyers.setAccessToken(access_token)
 				console.log("FYERS Grants provided  ") 
-                fyers.get_profile().then((response)=>{
+                fyers.get_profile().then((profileRes)=>{
 					console.log("FYERS Profile logged  ") 
-					console.log(response)
+					console.log(profileRes)
   
-					fyers.getQuotes([`BSE:${symbol}` ]).then((response)=>{
+					fyers.getQuotes([`BSE:${symbol}` ]).then((quoteRes)=>{
 						console.log("FYERS Sample Quotes..  ") 
-					 	console.log(response)
+					 	console.log(quoteRes)
 					    //console.log("STOCK TABLE " , JSON.stringify(stock_table) )	
 					   // showFYERSPROFILEQUOTES(req,res,stock_table)
 					    setCORSHeaders( res )
-					      res.send(response);
+					      res.send(quoteRes);
 						
 
 					}).catch((err)=>{
@@ -734,14 +737,17 @@ router.get('/fyersgetbsecequote', async function (req,res) {
 					//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS PROFILE CALL FAILED "})
 					console.log(err)
 				})
-
-			}else{
-				console.log("error generating access token",JSON.stringify(response.data));
-				 setCORSHeaders( res )
-				res.send(JSON.stringify({"FYERS": "FYERS ACCESS FAILED "}));
+			   }else {
+				   setCORSHeaders( res )
+				   console.log("Fyers API fyers object not initialised " );
+			   } 
+			//}else{
+			///	console.log("error generating access token",JSON.stringify(response.data));
+			//	 setCORSHeaders( res )
+			//	res.send(JSON.stringify({"FYERS": "FYERS ACCESS FAILED "}));
 				//showFYERSPROFILEQUOTES(req,res,{"FYERS": "FYERS ACCESS FAILED "})
-			}
-		})
+			//}
+		//})
 	   }
 	   else {
 		console.log("FYERS Initialization issues ... ") 
