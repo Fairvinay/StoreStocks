@@ -11,6 +11,10 @@ import { getTradeData } from "./tradeGridBook.actions";
 import {API, FYERSAPI, FYERSAPILOGINURL} from "@/libs/client"
 import StreamToggleButton from './StreamToggleButton';
 
+//CUSTOME HOOK to DETECT MOBILE 
+import { useIsMobile } from "./useIsMobile";
+import { TradeBookMobileView as  MobileView } from "./TradeBookMobileView";
+
 const TradeGrid = ({ tradeDataB   }) => {
   StorageUtils._save(CommonConstants.tradeDataCacheKey,CommonConstants.sampleTradeDataVersion1);
    const currentPlatform = useSelector((state ) => state.misc.platformType)
@@ -25,6 +29,8 @@ const TradeGrid = ({ tradeDataB   }) => {
     let globalUserCheck  = undefined;
     let globalUserTrades  = undefined;
    const [userLogged , setUserLogged ] = useState(false);
+   // CHECK MOBILE OR DESTOP
+   const isMobile = useIsMobile();
   function parseDate(str) {
     // e.g., "14-Jul-2025 09:48:22"
     const [datePart, timePart] = str.split(" ");
@@ -290,7 +296,14 @@ const getSortIndicator = (column) =>
         <br/>
         <br/>
       <h1 className='text-black font-semibold mb-2 dark:text-white text-lg'>Trade Book</h1>
-       <div className="hidden md:flex flex justify-between  relative items-center">
+      {/* <div className="hidden md:flex flex justify-between  relative items-center">*/}
+        <div
+             className={
+              isMobile
+                  ? "mb-2 md:flex flex justify-between relative items-center"
+                  : "md:flex flex justify-between relative items-center"
+               }
+          > 
                  {/* 
                   <select className="p-2 rounded-lg bg-greylight dark:bg-greydark text-gretdark dark:text-white focus-visible:outline-none">
                   md:hidden
@@ -403,8 +416,78 @@ const getSortIndicator = (column) =>
           </p>
         </div>
           <br/>
+{/*<div class="overflow-x-auto w-full">
+  <table class="min-w-full table-auto text-sm border-collapse">
+    <thead class="bg-gray-200 text-gray-700">
+      <tr>
+        <th class="px-4 py-2 text-left">Instrument</th>
+        <th class="px-4 py-2 text-left">Product Type</th>
+        <th class="px-4 py-2 text-left">Quantity</th>
+        <th class="px-4 py-2 text-left">Price</th>
+        <th class="px-4 py-2 text-left">Time</th>
+        <th class="px-4 py-2 text-left">Trade Value</th>
+        <th class="px-4 py-2 text-left">Buy/Sell</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr class="bg-green-300">
+        <td class="px-4 py-2">NIFTY25JUL24500CE</td>
+        <td class="px-4 py-2">INTRADAY</td>
+        <td class="px-4 py-2">75</td>
+        <td class="px-4 py-2">248.88</td>
+        <td class="px-4 py-2">13:55:12</td>
+        <td class="px-4 py-2">18666.00</td>
+        <td class="px-4 py-2">BUY</td>
+      </tr>
+      <tr class="bg-green-300">
+        <td class="px-4 py-2">NIFTY25JUL24500CE</td>
+        <td class="px-4 py-2">INTRADAY</td>
+        <td class="px-4 py-2">75</td>
+        <td class="px-4 py-2">246.38</td>
+        <td class="px-4 py-2">13:53:02</td>
+        <td class="px-4 py-2">18478.50</td>
+        <td class="px-4 py-2">BUY</td>
+      </tr>
+      <tr class="bg-green-300">
+        <td class="px-4 py-2">NIFTY2580725100PE</td>
+        <td class="px-4 py-2">INTRADAY</td>
+        <td class="px-4 py-2">75</td>
+        <td class="px-4 py-2">382.6</td>
+        <td class="px-4 py-2">13:51:22</td>
+        <td class="px-4 py-2">28695.00</td>
+        <td class="px-4 py-2">SELL</td>
+      </tr>
+      <tr class="bg-red-300">
+        <td class="px-4 py-2">NIFTY25JUL24500CE</td>
+        <td class="px-4 py-2">INTRADAY</td>
+        <td class="px-4 py-2">75</td>
+        <td class="px-4 py-2">249.9</td>
+        <td class="px-4 py-2">13:50:11</td>
+        <td class="px-4 py-2">18742.50</td>
+        <td class="px-4 py-2">SELL</td>
+      </tr>
+      <tr class="bg-green-300">
+        <td class="px-4 py-2">NIFTY25JUL24500CE</td>
+        <td class="px-4 py-2">INTRADAY</td>
+        <td class="px-4 py-2">75</td>
+        <td class="px-4 py-2">241.85</td>
+        <td class="px-4 py-2">13:48:33</td>
+        <td class="px-4 py-2">18138.75</td>
+        <td class="px-4 py-2">BUY</td>
+      </tr>
+    </tbody>
+  </table>
+</div> */}
 
-      <table className="min-w-full text-sm text-left border border-gray-200 shadow-md rounded-lg overflow-hidden">
+     {isMobile ? <MobileView sortedData={sortedData}
+      userLogged={userLogged}
+      handleSort={handleSort}
+      getSortIndicator={getSortIndicator}
+       /> : 
+     (  
+     <div class="overflow-x-auto w-full">  
+    {/*  <table className="min-w-full text-sm text-left border border-gray-200 shadow-md rounded-lg overflow-hidden"> */} 
+      <table className="min-w-full table-auto text-sm border-collapse">
         <thead className="bg-gray-100 text-gray-700 font-semibold">
           <tr>
             <th className="py-2 px-4 border-b cursor-pointer" onClick={() => handleSort("symbol")}>Instrument{getSortIndicator("symbol")}</th>
@@ -434,7 +517,10 @@ const getSortIndicator = (column) =>
         </tbody>
       </table>
     </div>
+    )}   {/*  MOBILE or DESKTOP VIEW  */}
+    </div>
   );
+     
 };
 
 export default TradeGrid;

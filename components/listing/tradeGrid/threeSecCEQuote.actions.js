@@ -6,7 +6,7 @@ import { saveQuoteBook } from '@/redux/slices/ceQuoteSlice';
 
 import {CommonConstants} from "@/utils/constants"
 import toast from "react-hot-toast"
-import { FYERSAPINSECSV , FYERSAPITICKERACCESTOKEN,   FYERSAPITICKERURL , FYERSAPITICKERURLCLOSE} from '@/libs/client';
+import { FYERSAPINSECSV ,FYERSAPITHREESECQUOTE ,  FYERSAPITICKERACCESTOKEN,   FYERSAPITICKERURL , FYERSAPITICKERURLCLOSE} from '@/libs/client';
 
 
  const TICKER_URL  = [   FYERSAPITICKERURL  ] ;
@@ -437,10 +437,11 @@ export const getSensexTickerData = (_id ) => {
                             interval: '1m',
                             limit: '100',
                             ticker:sym,
-                            access_token: acctoken
+                         //   access_token: acctoken
                             });
                         
-                         const res = await API.get(FYERSAPITICKERACCESTOKEN , {params: { "auth_code" : auth_code }});
+                      //   const res = await API.get(FYERSAPITICKERACCESTOKEN , {params: { "auth_code" : auth_code }});
+                         const res = await API.get(FYERSAPITHREESECQUOTE , {params: { "auth_code" : auth_code }});
                           const text = await res.data ;   
                           let dArray = text.data["d"];
                             let firstObj = dArray[0];
