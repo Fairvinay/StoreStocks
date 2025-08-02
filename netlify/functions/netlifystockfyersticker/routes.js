@@ -30,7 +30,7 @@ var globlaTickerFyersSocketConnected = false;
 var cnt = 0;
 
 //var redirectUrl  = "https://192.168.1.8:56322/fyersauthcodeverify"
-var redirectUrl  = "https://192.168.1.7:8888/.netlify/functions/netlifystockfyersbridge/api/fyersauthcodeverify"
+var redirectUrl  = "https://store-stocks.netlify.app/.netlify/functions/netlifystockfyersbridge/api/fyersauthcodeverify"
 //var redirectUrl  = "https://store-stocks.netlify.app/.netlify/functions/netlifystockfyersbridge/api/fyersauthcodeverify"
 var fyers= new fyersModel({"path":"./","enableLogging":true})
 fyers.setAppId(client_id)

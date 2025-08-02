@@ -489,6 +489,19 @@ const getSortIndicator = (column) =>
      (  
      <div class="overflow-x-auto w-full">  
     {/*  <table className="min-w-full text-sm text-left border border-gray-200 shadow-md rounded-lg overflow-hidden"> */} 
+         <div class="grid grid-cols-8 bg-gray-100 text-gray-700 font-semibold text-sm ">
+            <div class="py-1 px-2  cursor-pointer"  >SrNo </div>
+            <div class="py-1 px-2  cursor-pointer" onClick={() => handleSort("symbol")}>Instrument{getSortIndicator("symbol")} </div>
+            <div class="py-1 px-2  cursor-pointer" onClick={() => handleSort("productType")}>Product{getSortIndicator("productType")} </div>
+            <div class="py-1 px-2  cursor-pointer" onClick={() => handleSort("tradedQty")}>Quantity{getSortIndicator("tradedQty")} </div>
+            <div class="py-1 px-2  cursor-pointer" onClick={() => handleSort("tradePrice")}>Price{getSortIndicator("tradePrice")} </div>
+            <div class="py-1 px-2  cursor-pointer" onClick={() => handleSort("orderDateTime")}>Time{getSortIndicator("orderDateTime")} </div>
+            <div class="py-1 px-2  cursor-pointer" onClick={() => handleSort("tradeValue")}>Trade Value{getSortIndicator("tradeValue")} </div>
+ 
+            <div class="py-1 px-2">Buy/Sell</div>
+        </div>
+     
+   {/*  
       <table className="min-w-full table-auto text-sm border-collapse">
         <thead className="bg-gray-100 text-gray-700 font-semibold">
           <tr>
@@ -500,9 +513,24 @@ const getSortIndicator = (column) =>
             <th className="py-2 px-4 border-b cursor-pointer" onClick={() => handleSort("tradeValue")}>Trade Value{getSortIndicator("tradeValue")}</th>
             <th className="py-2 px-4 border-b">Buy/Sell</th>
           </tr>
-        </thead>
-
-        <tbody>
+        </thead> */}
+         {/* Table Body Rows  */}
+    <div class="max-h-[400px] overflow-y-auto divide-y divide-gray-200">
+       {/*  Example Row  */}
+        { (Array.isArray(sortedData) &&  sortedData.length > 0 && userLogged  ) ? sortedData?.map((row, index) => (
+      <div key={index}  className={`grid grid-cols-8 text-sm text-gray-800 hover:bg-gray-50 hover:bg-gray-50 transition ${row['side'] === '-1' ? 'trade-row-sell' : 'trade-row-buy'}`} >
+        <div class="py-1 px-2 ">{index}</div>
+        <div class="py-1 px-2 text-center ">{row["symbol"]}</div>
+        <div class="py-1 px-2 text-center"> {row["productType"]}  </div>
+        <div class="py-1 px-2 text-center">{row["tradedQty"]}</div>
+        <div class="py-1 px-2 text-center">{row["tradePrice"]}</div>
+        <div class="py-1 px-2 ">{row["orderDateTime"]}</div>
+        <div class="py-1 px-2 text-center">{row["tradeValue"]}</div>
+        <div class="py-1 px-2 text-green-600 font-bold">{row['side'] === '-1' ? 'SELL' : 'BUY'}</div>
+        </div>  )) : (    <div className="grid grid-cols-8 text-sm text-gray-800 hover:bg-gray-50">No trades found</div>
+          )}
+      </div>
+       {/* <tbody>
           { (Array.isArray(sortedData) &&  sortedData.length > 0 && userLogged  ) ? sortedData?.map((row, index) => (
             <tr key={index} className={`hover:bg-gray-50 transition ${row['side'] === '-1' ? 'trade-row-sell' : 'trade-row-buy'}`}>
               <td className="py-2 px-4 border-b">{row["symbol"]}</td>
@@ -517,7 +545,7 @@ const getSortIndicator = (column) =>
             <tr><td colSpan="7" className="text-center py-4">No trades found</td></tr>
           )}
         </tbody>
-      </table>
+      </table>*/} 
     </div>
     )}   {/*  MOBILE or DESKTOP VIEW  */}
     </div>
