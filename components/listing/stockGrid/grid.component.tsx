@@ -61,7 +61,7 @@ const StockGrid = () => {
                     }) :  tab === "Top Trades" ?   (  
                            <TradeGridPlotterPDFCSV tradeDataB={tradeData} />
                        
-                     ):    <>  <TradeGrid tradeDataB={tradeData} /> </> 
+                     ):    <>  <TradeGridPlotterPDFCSV tradeDataB={tradeData} /> </> 
                 }
 
             </div>
