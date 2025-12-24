@@ -9,7 +9,7 @@ import {fetchMoreStocks, fetchStockList} from './grid.actions';
 import {useAppDispatch} from '@/providers/ReduxProvider';
 import TradeTable from '@/components/company/trade/TradeTable';
 import TradeGrid from '../tradeGrid/TradeGrid';
-
+import TradeGridPlotterPDFCSV from '../tradeGrid/TradeGridPlotterPDFCSVbckp';
 const StockGrid = () => {
     const gainers = useSelector((state: GlobalState) => state.stock.gainers)
     const losers = useSelector((state: GlobalState) => state.stock.losers)
@@ -59,7 +59,7 @@ const StockGrid = () => {
                     }) : tab === "Top Losers" ? losers.map((item: any) => {
                         return <StockCard key={item.symbol} stock={item}/>  
                     }) :  tab === "Top Trades" ?   (  
-                          <TradeGrid tradeDataB={tradeData} /> 
+                           <TradeGridPlotterPDFCSV tradeDataB={tradeData} />
                        
                      ):    <>  <TradeGrid tradeDataB={tradeData} /> </> 
                 }
